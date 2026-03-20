@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>LearnQuest — AI Gamified Learning</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --lav-200:#e9d5ff;--lav-300:#d8b4fe;--lav-400:#c084fc;--lav-500:#a855f7;--lav-600:#9333ea;
+  --gold-400:#fbbf24;--gold-500:#f59e0b;--gold-600:#d97706;
+  --mint-400:#34d399;--mint-500:#10b981;--mint-600:#059669;
+  --rose-400:#fb7185;--rose-500:#f43f5e;--sky-400:#38bdf8;
+}
+[data-theme="dark"]{
+  --bg:#0d0b14;--bg2:#13101f;--bg3:#1a1629;
+  --card:#1e1930;--card2:#251f3a;--card3:#2d2748;
+  --border:rgba(168,85,247,.13);--border2:rgba(168,85,247,.28);
+  --text:#f1eeff;--text2:#b8a9d9;--text3:#7b6fa0;
+  --primary:#c084fc;--pglow:rgba(192,132,252,.28);
+  --accent:#fbbf24;--a2:#34d399;--danger:#fb7185;
+  --navbg:rgba(13,11,20,.93);--shadow:0 8px 32px rgba(0,0,0,.45);
+}
+[data-theme="light"]{
+  --bg:#fdf8ff;--bg2:#f7f0ff;--bg3:#f0e6ff;
+  --card:#ffffff;--card2:#faf5ff;--card3:#f3e8ff;
+  --border:rgba(147,51,234,.14);--border2:rgba(147,51,234,.3);
+  --text:#1a1033;--text2:#4a3870;--text3:#8b72b8;
+  --primary:#9333ea;--pglow:rgba(147,51,234,.18);
+  --accent:#d97706;--a2:#059669;--danger:#f43f5e;
+  --navbg:rgba(253,248,255,.95);--shadow:0 4px 20px rgba(147,51,234,.1);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;overflow-x:hidden;transition:background .3s,color .3s;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 65% 50% at 8% 12%,rgba(168,85,247,.07) 0%,transparent 60%),
+  radial-gradient(ellipse 50% 40% at 92% 88%,rgba(251,191,36,.05) 0%,transparent 60%);}
+[data-theme="light"] body::before{background:
+  radial-gradient(ellipse 65% 50% at 8% 12%,rgba(168,85,247,.09) 0%,transparent 60%),
+  radial-gradient(ellipse 50% 40% at 92% 88%,rgba(251,191,36,.07) 0%,transparent 60%);}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:300;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:var(--navbg);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:background .3s;}
+.nl{display:flex;align-items:center;gap:10px;cursor:pointer;}
+.logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--lav-500),var(--lav-300));display:flex;align-items:center;justify-content:center;font-size:1rem;box-shadow:0 0 18px var(--pglow);}
+.brand{font-family:'DM Serif Display',serif;font-size:1.2rem;background:linear-gradient(135deg,var(--lav-500),var(--lav-300));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.nlinks{display:flex;gap:2px;}
+.nlinks a{padding:6px 13px;border-radius:8px;color:var(--text2);text-decoration:none;font-size:.8rem;font-weight:500;transition:all .2s;cursor:pointer;white-space:nowrap;}
+.nlinks a:hover,.nlinks a.active{color:var(--primary);background:rgba(168,85,247,.1);}
+.nr{display:flex;align-items:center;gap:8px;}
+.chip{display:flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:.72rem;font-weight:600;border:1px solid;}
+.clv{background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.3);color:var(--primary);}
+.cxp{background:rgba(251,191,36,.1);border-color:rgba(251,191,36,.3);color:var(--accent);}
+.cst{background:rgba(251,113,133,.1);border-color:rgba(251,113,133,.3);color:var(--danger);}
+.tbtn{width:36px;height:36px;border-radius:10px;border:1px solid var(--border2);background:var(--card2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:all .2s;color:var(--text);}
+.tbtn:hover{background:var(--card3);border-color:var(--primary);}
+.av{width:34px;height:34px;border-radius:50%;cursor:pointer;background:linear-gradient(135deg,var(--lav-500),var(--lav-300));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;color:#fff;border:2px solid var(--lav-400);box-shadow:0 0 12px var(--pglow);}
+
+.app{padding-top:64px;position:relative;z-index:1;}
+.page{display:none;min-height:calc(100vh - 64px);}
+.page.active{display:block;}
+.con{max-width:1300px;margin:0 auto;padding:28px 24px;}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;transition:border-color .2s,box-shadow .2s;}
+.card2{background:var(--card2);border:1px solid var(--border);border-radius:12px;}
+.card:hover{border-color:var(--border2);box-shadow:var(--shadow);}
+
+.stitle{font-size:.68rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--text3);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.stitle::after{content:'';flex:1;height:1px;background:var(--border);}
+
+.btn{padding:9px 20px;border-radius:10px;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;font-size:.82rem;transition:all .2s;}
+.bp{background:linear-gradient(135deg,var(--lav-500),var(--lav-400));color:#fff;box-shadow:0 4px 16px var(--pglow);}
+.bp:hover{transform:translateY(-2px);box-shadow:0 8px 24px var(--pglow);}
+.bg{background:transparent;border:1px solid var(--border2);color:var(--text2);}
+.bg:hover{border-color:var(--primary);color:var(--primary);background:rgba(168,85,247,.06);}
+.br{background:linear-gradient(135deg,var(--rose-500),var(--rose-400));color:#fff;box-shadow:0 4px 14px rgba(244,63,94,.25);}
+.br:hover{transform:translateY(-2px);}
+.bm{background:linear-gradient(135deg,var(--mint-500),var(--mint-400));color:#fff;}
+.bm:hover{transform:translateY(-2px);}
+.bpur{background:linear-gradient(135deg,var(--lav-600),var(--lav-500));color:#fff;box-shadow:0 4px 14px var(--pglow);}
+.bpur:hover{transform:translateY(-2px);}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;}
+
+.tag{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:.71rem;font-weight:600;border:1px solid;}
+.tl{background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.3);color:var(--primary);}
+.tg{background:rgba(251,191,36,.1);border-color:rgba(251,191,36,.3);color:var(--accent);}
+.tmt{background:rgba(52,211,153,.1);border-color:rgba(52,211,153,.3);color:var(--a2);}
+.tr2{background:rgba(244,63,94,.1);border-color:rgba(244,63,94,.3);color:var(--danger);}
+.tsk{background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.3);color:var(--sky-400);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.12)}100%{transform:scale(1)}}
+.fu{animation:fadeUp .4s ease forwards;}
+.fu1{animation-delay:.07s;opacity:0;}
+.fu2{animation-delay:.14s;opacity:0;}
+.fu3{animation-delay:.21s;opacity:0;}
+.fu4{animation-delay:.28s;opacity:0;}
+
+/* DASHBOARD */
+.hero{background:linear-gradient(135deg,var(--card) 0%,var(--card2) 100%);border:1px solid var(--border2);border-radius:22px;padding:32px 36px;display:flex;align-items:center;gap:28px;margin-bottom:24px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-80px;right:-60px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(168,85,247,.1),transparent 70%);pointer-events:none;}
+.hero::after{content:'';position:absolute;bottom:-50px;left:25%;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(251,191,36,.06),transparent 70%);pointer-events:none;}
+.hero-txt{flex:1;}
+.hero-txt h1{font-family:'DM Serif Display',serif;font-size:1.9rem;line-height:1.2;margin-bottom:8px;color:var(--text);}
+.hero-txt h1 span{color:var(--primary);}
+.hero-txt p{color:var(--text2);font-size:.87rem;line-height:1.6;margin-bottom:18px;}
+.hbtns{display:flex;gap:9px;flex-wrap:wrap;}
+.lw{background:rgba(168,85,247,.07);border:1px solid var(--border2);border-radius:18px;padding:22px 26px;text-align:center;min-width:200px;flex-shrink:0;}
+.ring{position:relative;width:82px;height:82px;margin:0 auto 12px;}
+.ring svg{width:82px;height:82px;transform:rotate(-90deg);}
+.rbg{fill:none;stroke:rgba(168,85,247,.1);stroke-width:6;}
+.rfl{fill:none;stroke:url(#lgr);stroke-width:6;stroke-linecap:round;stroke-dasharray:240;stroke-dashoffset:52;}
+.rc{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.rn{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--primary);line-height:1;}
+.rl{font-size:.55rem;color:var(--text3);letter-spacing:2px;margin-top:2px;}
+.lwtit{font-weight:700;font-size:.87rem;margin-bottom:2px;}
+.lwsub{font-size:.72rem;color:var(--text3);margin-bottom:10px;}
+.xpb{height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
+.xpbf{height:100%;background:linear-gradient(90deg,var(--lav-500),var(--lav-300));border-radius:3px;}
+.emo-ban{border-radius:12px;padding:12px 18px;display:flex;align-items:center;gap:12px;margin-bottom:20px;border:1px solid;transition:all .4s;}
+.emo-ban.happy{background:rgba(52,211,153,.06);border-color:rgba(52,211,153,.2);}
+.emo-ban.frustrated{background:rgba(244,63,94,.06);border-color:rgba(244,63,94,.2);}
+.emo-ban.tired{background:rgba(251,191,36,.06);border-color:rgba(251,191,36,.2);}
+.emo-msg{flex:1;font-size:.82rem;color:var(--text2);}
+.emo-act{font-size:.75rem;font-weight:600;cursor:pointer;text-decoration:underline;white-space:nowrap;color:var(--primary);}
+.burnout{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:12px 18px;display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.bm2{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
+.bmf{height:100%;background:linear-gradient(90deg,var(--mint-500),var(--gold-400),var(--danger));border-radius:3px;}
+.srow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:12px;transition:all .22s;cursor:default;}
+.sc:hover{transform:translateY(-3px);border-color:var(--border2);box-shadow:var(--shadow);}
+.si{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+.sv{font-family:'DM Serif Display',serif;font-size:1.45rem;color:var(--text);line-height:1;}
+.sl{font-size:.7rem;color:var(--text3);margin-top:2px;}
+.dgrid{display:grid;grid-template-columns:1fr 320px;gap:20px;}
+.lcol{display:flex;flex-direction:column;gap:20px;}
+.rcol{display:flex;flex-direction:column;gap:16px;}
+.brow{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:20px;}
+.bdg{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;font-size:.73rem;font-weight:600;border:1px solid;}
+.bdg.on{background:rgba(168,85,247,.08);border-color:rgba(168,85,247,.25);color:var(--primary);}
+.bdg.off{background:var(--border);border-color:var(--border);color:var(--text3);opacity:.6;}
+.qi{display:flex;align-items:center;gap:12px;background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:12px 15px;transition:all .2s;margin-bottom:8px;}
+.qi:hover{border-color:var(--border2);}
+.qi.done{opacity:.55;}
+.qi-info{flex:1;}
+.qi-title{font-size:.84rem;font-weight:600;margin-bottom:2px;color:var(--text);}
+.qi-sub{font-size:.7rem;color:var(--text3);}
+.qi-bar{height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:6px;}
+.qi-bf{height:100%;background:linear-gradient(90deg,var(--lav-500),var(--lav-300));border-radius:2px;}
+.qi-xp{font-family:'DM Serif Display',serif;font-size:.78rem;color:var(--accent);white-space:nowrap;}
+.stm{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;}
+.tr-root{display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,rgba(168,85,247,.08),rgba(251,191,36,.05));border:1px solid var(--border2);border-radius:12px;padding:11px 15px;cursor:pointer;transition:all .2s;margin-bottom:8px;}
+.tr-root:hover{transform:translateX(4px);border-color:var(--primary);}
+.tr-children{display:flex;gap:6px;flex-wrap:wrap;padding-left:16px;margin-bottom:6px;}
+.tnd{display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:8px;font-size:.74rem;font-weight:500;border:1px solid;transition:all .2s;cursor:pointer;}
+.tnd.on{background:rgba(168,85,247,.07);border-color:rgba(168,85,247,.2);color:var(--primary);}
+.tnd.off{background:var(--border);border-color:var(--border);color:var(--text3);}
+.tnd.sec{background:rgba(251,191,36,.06);border-color:rgba(251,191,36,.2);color:var(--accent);animation:pulse 2.2s infinite;}
+.tnd:hover{transform:translateY(-2px);}
+.ctip{background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);border-radius:12px;padding:11px 15px;margin-top:12px;font-size:.8rem;color:var(--text2);}
+.ctip b{color:var(--accent);}
+.ctl{color:var(--primary);cursor:pointer;text-decoration:underline;}
+.sq-card{background:linear-gradient(135deg,rgba(168,85,247,.05),rgba(52,211,153,.04));border:1px solid var(--border2);border-radius:14px;padding:16px;}
+.sq-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.78rem;border:2px solid var(--border2);color:#fff;}
+.sq-gb{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin:8px 0;}
+.sq-gbf{height:100%;background:linear-gradient(90deg,var(--lav-500),var(--lav-300));border-radius:2px;}
+.bt-teas{background:linear-gradient(135deg,var(--card),var(--card2));border:1px solid rgba(244,63,94,.2);border-radius:14px;padding:16px;position:relative;overflow:hidden;}
+.bt-teas::before{content:'';position:absolute;top:-30px;right:-30px;width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,rgba(244,63,94,.12),transparent 70%);}
+.boss{background:linear-gradient(135deg,var(--card),var(--card2));border:1px solid rgba(244,63,94,.2);border-radius:16px;padding:18px;text-align:center;position:relative;overflow:hidden;}
+.boss::before{content:'';position:absolute;top:-40px;right:-40px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(244,63,94,.1),transparent 70%);}
+.boss-e{font-size:2.5rem;margin-bottom:6px;animation:float 3s ease-in-out infinite;display:block;}
+.boss-timer{display:flex;justify-content:center;gap:7px;margin-bottom:12px;}
+.btu{text-align:center;}
+.bnum{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--danger);background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.2);padding:5px 10px;border-radius:8px;min-width:42px;display:block;line-height:1.2;}
+.btlbl{font-size:.55rem;color:var(--text3);letter-spacing:1px;margin-top:2px;}
+.bsep{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--danger);line-height:2;}
+.mlbi{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--border);}
+.mlbi:last-child{border-bottom:none;}
+.mlbr{font-family:'DM Serif Display',serif;font-size:.85rem;width:20px;text-align:center;}
+.mlbav{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.73rem;color:#fff;}
+.mlbn{flex:1;font-size:.82rem;font-weight:500;}
+.mlbx{font-family:'DM Serif Display',serif;font-size:.78rem;color:var(--accent);}
+
+/* SKILL TREE PAGE */
+.stp{padding:28px 24px;max-width:1200px;margin:0 auto;}
+.subj-tabs{display:flex;gap:7px;margin-bottom:22px;flex-wrap:wrap;}
+.stab{padding:7px 16px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;font-size:.79rem;font-weight:500;transition:all .2s;font-family:'Plus Jakarta Sans',sans-serif;}
+.stab.active{background:rgba(168,85,247,.1);border-color:var(--primary);color:var(--primary);}
+.tree-vis{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:28px;min-height:380px;}
+.tree-lvl{display:flex;gap:14px;justify-content:center;margin-bottom:26px;flex-wrap:wrap;position:relative;}
+.tree-lvl::after{content:'';position:absolute;bottom:-22px;left:50%;width:1px;height:22px;background:linear-gradient(to bottom,var(--border2),transparent);}
+.tnb{display:flex;flex-direction:column;align-items:center;gap:7px;padding:16px 20px;border-radius:16px;border:1px solid;cursor:pointer;transition:all .25s;text-align:center;min-width:120px;}
+.tnb.locked{border-color:var(--border);background:var(--card2);opacity:.55;}
+.tnb.unlocked{border-color:rgba(168,85,247,.25);background:rgba(168,85,247,.04);}
+.tnb.unlocked:hover{transform:translateY(-4px);box-shadow:0 8px 24px var(--pglow);}
+.tnb.mastered{border-color:rgba(52,211,153,.3);background:rgba(52,211,153,.05);}
+.tnb.mastered:hover{transform:translateY(-4px);box-shadow:0 8px 20px rgba(52,211,153,.2);}
+.tnb.secret{border-color:rgba(251,191,36,.3);background:rgba(251,191,36,.04);animation:pulse 2.5s infinite;}
+.tni{font-size:1.9rem;margin-bottom:2px;}
+.tnl{font-weight:600;font-size:.82rem;color:var(--text);}
+.tns{font-size:.67rem;color:var(--text3);margin-top:1px;}
+.tnx{font-family:'DM Serif Display',serif;font-size:.68rem;color:var(--accent);}
+.tconn{display:flex;justify-content:center;margin-bottom:8px;}
+.tline{width:2px;height:22px;background:linear-gradient(to bottom,var(--border2),var(--border));}
+.tleg{display:flex;gap:16px;justify-content:center;margin-top:18px;flex-wrap:wrap;}
+.tlegi{display:flex;align-items:center;gap:5px;font-size:.72rem;color:var(--text3);}
+.tdot{width:8px;height:8px;border-radius:50%;}
+
+/* QUIZ */
+.qp{padding:28px 24px;max-width:860px;margin:0 auto;}
+.mode-tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+.mtab{padding:8px 16px;border-radius:10px;border:1px solid var(--border);background:var(--card2);color:var(--text2);cursor:pointer;font-size:.79rem;font-weight:600;transition:all .2s;font-family:'Plus Jakarta Sans',sans-serif;}
+.mtab.active{border-color:var(--primary);color:var(--primary);background:rgba(168,85,247,.08);}
+.sel-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:26px;}
+.tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:20px;}
+.tbtn{padding:11px;border-radius:12px;border:1px solid var(--border);background:var(--card2);color:var(--text);cursor:pointer;font-size:.79rem;font-weight:500;transition:all .2s;font-family:'Plus Jakarta Sans',sans-serif;}
+.tbtn:hover{border-color:var(--border2);}
+.tbtn.sel{border-color:var(--primary);color:var(--primary);background:rgba(168,85,247,.07);}
+.drow{display:flex;gap:8px;margin-bottom:18px;}
+.dbtn{flex:1;padding:9px;border-radius:10px;border:1px solid var(--border);background:var(--card2);color:var(--text2);cursor:pointer;font-size:.79rem;font-weight:600;transition:all .2s;font-family:'Plus Jakarta Sans',sans-serif;}
+.dbtn.easy.sel{border-color:var(--mint-400);color:var(--mint-400);background:rgba(52,211,153,.07);}
+.dbtn.med.sel{border-color:var(--gold-400);color:var(--gold-400);background:rgba(251,191,36,.07);}
+.dbtn.hard.sel{border-color:var(--danger);color:var(--danger);background:rgba(244,63,94,.07);}
+.adapt-info{background:rgba(168,85,247,.05);border:1px solid rgba(168,85,247,.15);border-radius:12px;padding:11px 15px;margin-bottom:16px;font-size:.78rem;color:var(--text2);line-height:1.55;}
+.adapt-info b{color:var(--primary);}
+.sbtn{width:100%;padding:14px;border-radius:12px;border:none;cursor:pointer;background:linear-gradient(135deg,var(--lav-500),var(--lav-400));color:#fff;font-weight:700;font-size:.9rem;font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:.5px;box-shadow:0 6px 24px var(--pglow);transition:all .22s;}
+.sbtn:hover{transform:translateY(-2px);box-shadow:0 10px 32px var(--pglow);}
+.sbtn:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+.output-box{background:rgba(0,0,0,.25);border:1px solid var(--border2);border-radius:12px;padding:16px;font-family:monospace;font-size:1rem;color:var(--mint-400);margin-bottom:14px;letter-spacing:.5px;}
+[data-theme="light"] .output-box{background:rgba(168,85,247,.05);}
+.code-input{width:100%;background:var(--card3);border:1px solid var(--border);border-radius:12px;padding:14px;font-family:monospace;font-size:.85rem;color:var(--text);resize:vertical;min-height:110px;margin-bottom:12px;}
+.code-input:focus{outline:none;border-color:var(--primary);}
+.story-scene{font-size:.9rem;color:var(--text2);line-height:1.75;margin-bottom:16px;padding:15px;background:rgba(168,85,247,.04);border-radius:12px;border-left:3px solid var(--primary);}
+.q-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px;}
+.q-counter{font-size:.8rem;color:var(--text3);font-weight:500;}
+.qtimer{display:flex;align-items:center;gap:6px;padding:5px 14px;border-radius:20px;background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.2);color:var(--danger);font-family:'DM Serif Display',serif;font-size:.95rem;}
+.qdp{padding:4px 11px;border-radius:20px;font-size:.68rem;font-weight:700;}
+.qdp.easy{background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.2);color:var(--mint-400);}
+.qdp.med{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.2);color:var(--gold-400);}
+.qdp.hard{background:rgba(244,63,94,.1);border:1px solid rgba(244,63,94,.2);color:var(--danger);}
+.qprog{height:4px;background:var(--border);border-radius:3px;overflow:hidden;margin-bottom:24px;}
+.qpf{height:100%;background:linear-gradient(90deg,var(--lav-500),var(--lav-300));border-radius:3px;transition:width .5s;}
+.qcard{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:28px;}
+.qtopic{font-size:.67rem;color:var(--primary);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;font-weight:700;}
+.qtext{font-size:1.07rem;font-weight:500;line-height:1.65;margin-bottom:22px;color:var(--text);}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.opt{padding:13px 16px;border-radius:12px;border:1px solid var(--border);background:var(--card2);color:var(--text);cursor:pointer;font-size:.83rem;font-weight:500;text-align:left;transition:all .2s;font-family:'Plus Jakarta Sans',sans-serif;line-height:1.4;}
+.opt:hover:not(:disabled){border-color:var(--primary);background:rgba(168,85,247,.05);}
+.opt.correct{border-color:var(--mint-400)!important;background:rgba(52,211,153,.1)!important;color:var(--mint-400)!important;}
+.opt.wrong{border-color:var(--danger)!important;background:rgba(244,63,94,.07)!important;color:var(--danger)!important;}
+.opt:disabled{cursor:not-allowed;}
+.olbl{font-size:.6rem;color:var(--text3);display:block;margin-bottom:3px;font-weight:700;letter-spacing:1px;}
+.replay-panel{display:none;margin-top:15px;background:rgba(168,85,247,.05);border:1px solid rgba(168,85,247,.15);border-radius:12px;padding:14px 17px;}
+.replay-panel.show{display:block;}
+.replay-title{font-size:.68rem;color:var(--primary);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:9px;}
+.replay-step{display:flex;gap:9px;font-size:.79rem;color:var(--text2);margin-bottom:6px;align-items:flex-start;}
+.replay-num{width:19px;height:19px;border-radius:50%;background:rgba(168,85,247,.15);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:700;flex-shrink:0;margin-top:1px;}
+.mist-p{display:none;margin-top:13px;background:rgba(251,191,36,.05);border:1px solid rgba(251,191,36,.18);border-radius:12px;padding:13px 16px;}
+.mist-p.show{display:block;}
+.mp-ttl{font-size:.67rem;color:var(--accent);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
+.mp-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px;}
+.mptag{padding:3px 9px;border-radius:20px;font-size:.7rem;font-weight:600;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);color:var(--accent);}
+.mp-gap{font-size:.78rem;color:var(--text2);line-height:1.5;}
+.adapt-up{display:none;margin-top:12px;background:rgba(168,85,247,.06);border:1px solid rgba(168,85,247,.15);border-radius:12px;padding:9px 15px;font-size:.78rem;color:var(--primary);font-weight:500;}
+.adapt-up.show{display:block;}
+.qload{text-align:center;padding:56px 20px;}
+.spinner{width:50px;height:50px;border-radius:50%;border:3px solid rgba(168,85,247,.12);border-top-color:var(--primary);animation:spin .8s linear infinite;margin:0 auto 14px;}
+.lt{color:var(--text2);font-size:.87rem;}
+.ls{color:var(--text3);font-size:.75rem;margin-top:4px;}
+.rcard{display:none;background:var(--card);border:1px solid var(--border);border-radius:18px;padding:32px;text-align:center;}
+.rscore{font-family:'DM Serif Display',serif;font-size:3.2rem;background:linear-gradient(135deg,var(--lav-500),var(--lav-300));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:5px;}
+.rlbl{color:var(--text2);margin-bottom:6px;font-size:.95rem;}
+.ar{display:inline-flex;align-items:center;gap:5px;margin-bottom:18px;padding:5px 12px;border-radius:20px;background:rgba(168,85,247,.09);border:1px solid rgba(168,85,247,.21);color:var(--primary);font-size:.74rem;font-weight:600;}
+.rsts{display:flex;justify-content:center;gap:26px;margin-bottom:18px;flex-wrap:wrap;}
+.rsi{text-align:center;}
+.rsv{font-family:'DM Serif Display',serif;font-size:1.3rem;}
+.rsl{font-size:.68rem;color:var(--text3);margin-top:2px;}
+.xpg{display:inline-flex;align-items:center;gap:8px;margin-bottom:16px;padding:9px 22px;border-radius:12px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);color:var(--accent);font-family:'DM Serif Display',serif;font-size:1rem;}
+.career-result{background:rgba(52,211,153,.05);border:1px solid rgba(52,211,153,.15);border-radius:12px;padding:14px;margin-bottom:16px;text-align:left;}
+.cr-title{font-size:.68rem;color:var(--a2);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;}
+.cr-item{display:flex;justify-content:space-between;font-size:.81rem;color:var(--text2);margin-bottom:4px;}
+.cr-val{color:var(--a2);font-weight:600;}
+.msum{background:rgba(251,191,36,.05);border:1px solid rgba(251,191,36,.15);border-radius:12px;padding:13px;margin-bottom:16px;text-align:left;}
+.mst{font-size:.67rem;color:var(--accent);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:7px;}
+.msi{display:flex;align-items:flex-start;gap:7px;font-size:.79rem;color:var(--text2);margin-bottom:4px;}
+.ract{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;}
+
+/* BATTLE */
+.pb-page{padding:28px 24px;max-width:980px;margin:0 auto;}
+.pb-status{display:flex;gap:14px;margin-bottom:24px;flex-wrap:wrap;}
+.pb-stat{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 18px;flex:1;min-width:120px;}
+.pb-stat-v{font-family:'DM Serif Display',serif;font-size:1.4rem;margin-bottom:3px;}
+.pb-stat-l{font-size:.7rem;color:var(--text3);}
+.pb-arena{background:linear-gradient(135deg,var(--card),var(--card2));border:1px solid rgba(244,63,94,.2);border-radius:18px;padding:26px;margin-bottom:20px;}
+.pb-players{display:flex;align-items:center;gap:18px;margin-bottom:22px;}
+.pb-player{flex:1;text-align:center;}
+.pb-pav{width:58px;height:58px;border-radius:50%;margin:0 auto 9px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:700;border:3px solid;color:#fff;}
+.pb-pname{font-weight:700;font-size:.9rem;margin-bottom:2px;}
+.pb-pelo{font-size:.75rem;color:var(--text3);}
+.pb-pbar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:9px;}
+.pb-pbf{height:100%;border-radius:3px;transition:width .5s;}
+.pb-vs{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--danger);}
+.pb-q{background:rgba(0,0,0,.1);border:1px solid rgba(244,63,94,.12);border-radius:14px;padding:20px;margin-bottom:15px;}
+[data-theme="light"] .pb-q{background:rgba(244,63,94,.03);}
+.pb-qtext{font-size:.96rem;font-weight:500;margin-bottom:15px;color:var(--text);}
+.pb-opts{display:flex;flex-direction:column;gap:8px;}
+.pb-opt{padding:11px 15px;border-radius:11px;border:1px solid var(--border);background:var(--card2);color:var(--text);cursor:pointer;font-size:.83rem;font-weight:500;text-align:left;transition:all .2s;font-family:'Plus Jakarta Sans',sans-serif;}
+.pb-opt:hover:not(:disabled){border-color:var(--danger);background:rgba(244,63,94,.05);}
+.pb-opt.pb-correct{border-color:var(--mint-400)!important;background:rgba(52,211,153,.1)!important;color:var(--mint-400)!important;}
+.pb-opt.pb-wrong{border-color:var(--danger)!important;background:rgba(244,63,94,.07)!important;color:var(--danger)!important;}
+.pb-feed{display:flex;gap:8px;flex-direction:column;max-height:180px;overflow-y:auto;}
+.pb-msg{font-size:.78rem;padding:5px 0;border-bottom:1px solid var(--border);color:var(--text2);}
+.pb-msg.system{color:var(--primary);}.pb-msg.win{color:var(--mint-400);}.pb-msg.lose{color:var(--danger);}
+.mm-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:22px;margin-bottom:16px;}
+.mm-row{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);}
+.mm-row:last-child{border-bottom:none;}
+
+/* LEADERBOARD */
+.lbp{padding:28px 24px;max-width:920px;margin:0 auto;}
+.lb-tabs{display:flex;gap:7px;margin-bottom:20px;}
+.lbt{padding:5px 13px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;font-size:.77rem;font-weight:500;font-family:'Plus Jakarta Sans',sans-serif;transition:all .2s;}
+.lbt.active{background:rgba(168,85,247,.08);border-color:var(--primary);color:var(--primary);}
+.lbi{display:flex;align-items:center;gap:13px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:13px 18px;margin-bottom:7px;transition:all .2s;}
+.lbi:hover{border-color:var(--border2);transform:translateX(4px);}
+.lbi.me{border-color:rgba(168,85,247,.3);background:rgba(168,85,247,.04);}
+.lbr{font-family:'DM Serif Display',serif;font-size:1rem;width:28px;text-align:center;}
+.lbav{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;color:#fff;}
+.lbinf{flex:1;}
+.lbname{font-weight:600;font-size:.87rem;color:var(--text);}
+.lblvl{font-size:.7rem;color:var(--text3);margin-top:1px;}
+.lbbd{display:flex;gap:3px;}
+.lbst{display:flex;align-items:center;gap:3px;font-size:.7rem;color:var(--danger);font-weight:600;}
+.lbxp{font-family:'DM Serif Display',serif;color:var(--accent);font-size:.9rem;}
+
+/* PROGRESS */
+.prp{padding:28px 24px;max-width:1200px;margin:0 auto;}
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:24px;}
+.pcard{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px;}
+.pcard h3{font-size:.67rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--text3);margin-bottom:16px;}
+.ski{margin-bottom:12px;}
+.skr{display:flex;justify-content:space-between;font-size:.83rem;font-weight:500;margin-bottom:5px;color:var(--text);}
+.skpct{color:var(--primary);font-family:'DM Serif Display',serif;font-size:.8rem;}
+.skb{height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
+.skbf{height:100%;border-radius:3px;transition:width 1.4s cubic-bezier(.4,0,.2,1);}
+.pred{background:rgba(168,85,247,.05);border:1px solid rgba(168,85,247,.14);border-radius:12px;padding:13px 16px;margin-top:13px;}
+.predt{font-size:.65rem;color:var(--primary);letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:7px;}
+.predi{display:flex;justify-content:space-between;font-size:.79rem;color:var(--text2);margin-bottom:4px;}
+.predv{color:var(--primary);font-weight:600;}
+.hm{display:grid;grid-template-columns:repeat(13,1fr);gap:3px;margin-top:9px;}
+.hmc{aspect-ratio:1;border-radius:2px;background:var(--border);transition:all .2s;cursor:default;}
+.hmc.l1{background:rgba(168,85,247,.18);}.hmc.l2{background:rgba(168,85,247,.34);}.hmc.l3{background:rgba(168,85,247,.56);}.hmc.l4{background:rgba(168,85,247,.8);}
+.hmc:hover{transform:scale(1.4);}
+.ai{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);}
+.ai:last-child{border-bottom:none;}
+.aico{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;}
+.atxt{flex:1;font-size:.81rem;color:var(--text);}
+.atm{font-size:.69rem;color:var(--text3);}
+.axp{font-family:'DM Serif Display',serif;font-size:.75rem;color:var(--accent);}
+.bggrid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;}
+.bgc{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:14px;text-align:center;transition:all .22s;}
+.bgc.on{border-color:rgba(168,85,247,.2);}
+.bgc.off{opacity:.45;}
+.bgc:hover{transform:translateY(-3px);box-shadow:var(--shadow);}
+.bge{font-size:1.7rem;margin-bottom:6px;}
+.bgn{font-size:.74rem;font-weight:700;margin-bottom:2px;color:var(--text);}
+.bgd{font-size:.64rem;color:var(--text3);}
+.pti{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:9px;transition:all .2s;}
+.pti:hover{border-color:var(--border2);}
+.ptih{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.ptin{font-weight:700;font-size:.85rem;color:var(--text);}
+.ptid{padding:2px 8px;border-radius:20px;font-size:.63rem;font-weight:700;}
+.ptid.hard{background:rgba(244,63,94,.09);color:var(--danger);}
+.ptid.med{background:rgba(251,191,36,.09);color:var(--accent);}
+.ptdesc{font-size:.74rem;color:var(--text3);margin-bottom:7px;}
+.pttags{display:flex;gap:4px;flex-wrap:wrap;}
+.pttag{padding:2px 7px;border-radius:20px;font-size:.62rem;background:rgba(168,85,247,.07);border:1px solid rgba(168,85,247,.15);color:var(--primary);}
+.ptshare{font-size:.71rem;color:var(--primary);cursor:pointer;text-decoration:underline;display:block;margin-top:7px;}
+.career-sim{background:linear-gradient(135deg,rgba(52,211,153,.04),rgba(168,85,247,.04));border:1px solid rgba(52,211,153,.15);border-radius:18px;padding:22px;}
+.cs-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;flex-wrap:wrap;gap:10px;}
+.cs-track{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:16px;}
+.cst{padding:6px 14px;border-radius:20px;border:1px solid rgba(52,211,153,.2);background:rgba(52,211,153,.06);color:var(--a2);font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s;}
+.cst.active{background:rgba(52,211,153,.14);border-color:var(--mint-400);}
+.cs-task{background:rgba(0,0,0,.08);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;}
+[data-theme="light"] .cs-task{background:rgba(168,85,247,.03);}
+.cs-task-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;}
+.cs-task-name{font-weight:700;font-size:.85rem;color:var(--text);}
+.cs-deadline{font-size:.71rem;color:var(--accent);}
+.cs-task-desc{font-size:.77rem;color:var(--text3);}
+.cs-progress{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:9px;}
+.cs-pf{height:100%;background:linear-gradient(90deg,var(--mint-500),var(--lav-400));border-radius:2px;}
+
+/* MENTOR */
+.mentor-page{padding:28px 24px;max-width:880px;margin:0 auto;}
+.mentor-chat{background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;}
+.chat-msgs{height:400px;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:13px;}
+.chat-msg{max-width:78%;padding:11px 15px;border-radius:14px;font-size:.84rem;line-height:1.6;}
+.chat-msg.user{align-self:flex-end;background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.2);color:var(--text);}
+.chat-msg.ai{align-self:flex-start;background:var(--card2);border:1px solid var(--border);color:var(--text);}
+.msg-name{font-size:.64rem;font-weight:700;margin-bottom:4px;letter-spacing:.5px;}
+.chat-msg.user .msg-name{color:var(--primary);}
+.chat-msg.ai .msg-name{color:var(--mint-400);}
+.mentor-quick{display:flex;gap:7px;flex-wrap:wrap;padding:0 20px 16px;}
+.mq{padding:5px 12px;border-radius:20px;border:1px solid rgba(168,85,247,.2);background:rgba(168,85,247,.06);color:var(--primary);font-size:.74rem;font-weight:500;cursor:pointer;transition:all .2s;}
+.mq:hover{background:rgba(168,85,247,.14);}
+.chat-input-row{display:flex;gap:8px;padding:16px;border-top:1px solid var(--border);}
+.chat-input{flex:1;background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:11px 15px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:.84rem;}
+.chat-input:focus{outline:none;border-color:var(--primary);}
+.study-plan{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px;margin-top:18px;}
+.sp-day{display:flex;align-items:center;gap:13px;padding:9px 0;border-bottom:1px solid var(--border);}
+.sp-day:last-child{border-bottom:none;}
+.sp-d{font-family:'DM Serif Display',serif;font-size:.82rem;color:var(--primary);width:32px;}
+.sp-task{flex:1;font-size:.82rem;color:var(--text);}
+.sp-dur{font-size:.71rem;color:var(--text3);}
+.sp-done{width:19px;height:19px;border-radius:50%;border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;}
+.sp-done.checked{background:var(--mint-500);border-color:var(--mint-500);}
+
+/* TOAST */
+.toast{position:fixed;bottom:22px;right:22px;z-index:999;background:var(--card);border:1px solid var(--primary);border-radius:16px;padding:13px 17px;display:flex;align-items:center;gap:11px;box-shadow:0 0 24px var(--pglow),0 10px 40px rgba(0,0,0,.4);transform:translateY(110px);opacity:0;transition:all .4s cubic-bezier(.34,1.56,.64,1);max-width:280px;}
+.toast.show{transform:translateY(0);opacity:1;}
+.ti{font-size:1.25rem;}
+.tt{font-weight:700;font-size:.81rem;color:var(--primary);}
+.tm{font-size:.71rem;color:var(--text3);margin-top:1px;}
+
+/* LEVEL UP */
+.luov{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);opacity:0;pointer-events:none;transition:opacity .3s;}
+.luov.show{opacity:1;pointer-events:all;}
+.lumod{background:linear-gradient(135deg,var(--card),var(--card2));border:2px solid var(--primary);border-radius:24px;padding:46px 54px;text-align:center;box-shadow:0 0 40px var(--pglow),0 0 80px rgba(168,85,247,.2);animation:pop .6s ease;}
+.lue{font-size:3.8rem;margin-bottom:12px;}
+.lut{font-size:.68rem;color:var(--primary);letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;font-weight:700;}
+.lunum{font-family:'DM Serif Display',serif;font-size:3rem;background:linear-gradient(135deg,var(--lav-400),var(--lav-200));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.lusub{color:var(--text2);margin-bottom:22px;font-size:.9rem;}
+
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:rgba(168,85,247,.25);border-radius:3px;}
+@media(max-width:900px){.srow{grid-template-columns:1fr 1fr;}.dgrid{grid-template-columns:1fr;}.tgrid{grid-template-columns:1fr 1fr;}.opts{grid-template-columns:1fr;}.pgrid{grid-template-columns:1fr;}.bggrid{grid-template-columns:repeat(2,1fr);}.hero{flex-direction:column;padding:24px;text-align:center;}.hbtns{justify-content:center;}.pb-players{flex-direction:column;}.hero-txt h1{font-size:1.5rem;}}
+@media(max-width:600px){.nlinks{display:none;}.srow{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+<svg style="display:none"><defs><linearGradient id="lgr" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#a855f7"/><stop offset="100%" stop-color="#c084fc"/></linearGradient></defs></svg>
+<!-- NAV -->
+<nav>
+  <div class="nl" onclick="go('dashboard',null)">
+    <div class="logo">⚡</div>
+    <span class="brand">LearnQuest</span>
+  </div>
+  <div class="nlinks">
+    <a class="active" onclick="go('dashboard',this)">Dashboard</a>
+    <a onclick="go('skilltree',this)">Skill Tree</a>
+    <a onclick="go('quiz',this)">Challenges</a>
+    <a onclick="go('battle',this)">⚔️ Battle</a>
+    <a onclick="go('leaderboard',this)">Leaderboard</a>
+    <a onclick="go('progress',this)">Progress</a>
+    <a onclick="go('mentor',this)">🤖 Mentor</a>
+  </div>
+  <div class="nr">
+    <div class="chip clv">⚡ Lv <span id="nav-lv">12</span></div>
+    <div class="chip cxp">✦ <span id="nav-xp">2,360</span> XP</div>
+    <div class="chip cst">🔥 <span id="nav-st">7</span>d</div>
+    <button class="tbtn" onclick="toggleTheme()" id="ticon">🌙</button>
+    <div class="av">A</div>
+  </div>
+</nav>
+<div class="app">
+
+<!-- DASHBOARD -->
+<div class="page active" id="page-dashboard">
+<div class="con">
+  <div class="emo-ban happy fu" id="emo-ban">
+    <div style="font-size:1.5rem" id="emo-ico">😊</div>
+    <div class="emo-msg" id="emo-msg">You're in a great mood! Perfect time to tackle a hard challenge. Adaptive engine boosting difficulty.</div>
+    <div class="emo-act" onclick="cycleEmo()">Switch →</div>
+  </div>
+  <div class="hero fu fu1">
+    <div class="hero-txt">
+      <h1>Welcome back, <span>Alex!</span> 👋</h1>
+      <p>On a <strong style="color:var(--danger)">7-day streak!</strong> Adaptive engine unlocked <strong style="color:var(--primary)">Medium</strong> for DSA. Weekly Boss ends in <strong style="color:var(--accent)">14h 23m</strong>. Squad "Debug Squad" has a new challenge!</p>
+      <div class="hbtns">
+        <button class="btn bp" onclick="go('quiz',document.querySelector('.nlinks a:nth-child(3)'))">⚡ Start Challenge</button>
+        <button class="btn bpur" onclick="go('battle',document.querySelector('.nlinks a:nth-child(4)'))">⚔️ Peer Battle</button>
+        <button class="btn bg" onclick="go('skilltree',document.querySelector('.nlinks a:nth-child(2)'))">🌳 Skill Tree</button>
+      </div>
+    </div>
+    <div class="lw">
+      <div class="ring">
+        <svg viewBox="0 0 82 82"><circle class="rbg" cx="41" cy="41" r="36"/><circle class="rfl" cx="41" cy="41" r="36"/></svg>
+        <div class="rc"><div class="rn">12</div><div class="rl">LEVEL</div></div>
+      </div>
+      <div class="lwtit">Scholar</div>
+      <div class="lwsub">2,360 / 3,000 XP → Lv 13</div>
+      <div class="xpb"><div class="xpbf" style="width:78%"></div></div>
+    </div>
+  </div>
+  <div class="burnout fu fu2">
+    <div style="font-size:1.2rem">🧘</div>
+    <div style="flex:1;font-size:.81rem"><strong>Focus Energy</strong> — 2.5 hrs studied. Peak state!</div>
+    <div class="bm2"><div class="bmf" style="width:40%"></div></div>
+    <div style="font-size:.73rem;font-weight:700;color:var(--a2);width:64px;text-align:right">Optimal</div>
+    <div style="font-size:.73rem;color:var(--primary);cursor:pointer;text-decoration:underline;white-space:nowrap" onclick="showToast('🧘','Smart Break!','A 10-min break boosts retention by 20%!')">Get tip →</div>
+  </div>
+  <div class="srow">
+    <div class="sc fu fu1"><div class="si" style="background:rgba(251,191,36,.1)">✦</div><div><div class="sv" style="color:var(--accent)">2,360</div><div class="sl">Total XP</div></div></div>
+    <div class="sc fu fu2"><div class="si" style="background:rgba(168,85,247,.1)">🎯</div><div><div class="sv" style="color:var(--primary)">83%</div><div class="sl">Avg Accuracy</div></div></div>
+    <div class="sc fu fu3"><div class="si" style="background:rgba(52,211,153,.1)">✅</div><div><div class="sv" style="color:var(--a2)">47</div><div class="sl">Quizzes Done</div></div></div>
+    <div class="sc fu fu4"><div class="si" style="background:rgba(244,63,94,.1)">⚔️</div><div><div class="sv" style="color:var(--danger)">12W-3L</div><div class="sl">Battle Record</div></div></div>
+  </div>
+  <div class="stitle">Badges</div>
+  <div class="brow">
+    <div class="bdg on">🔥 Streak Master</div><div class="bdg on">⚡ Speed Demon</div>
+    <div class="bdg on">🎯 Sharpshooter</div><div class="bdg on">🧠 Brain Power</div>
+    <div class="bdg on">⚔️ Battle Winner</div><div class="bdg off">👑 Quiz King</div>
+    <div class="bdg off">🌟 Perfect Score</div><div class="bdg off">🏆 Champion</div>
+  </div>
+  <div class="dgrid">
+    <div class="lcol">
+      <div>
+        <div class="stitle">Daily Quests</div>
+        <div class="qi done"><div style="font-size:1.1rem">🎯</div><div class="qi-info"><div class="qi-title">Complete 3 Challenges</div><div class="qi-sub">Data Structures · Done</div><div class="qi-bar"><div class="qi-bf" style="width:100%"></div></div></div><div class="qi-xp">+90 XP</div><div>✅</div></div>
+        <div class="qi"><div style="font-size:1.1rem">⚔️</div><div class="qi-info"><div class="qi-title">Win a Peer Battle</div><div class="qi-sub">1v1 Quiz Duel · Pending</div><div class="qi-bar"><div class="qi-bf" style="width:0%"></div></div></div><div class="qi-xp">+60 XP</div><div>⬜</div></div>
+        <div class="qi"><div style="font-size:1.1rem">📖</div><div class="qi-info"><div class="qi-title">Teach a Concept</div><div class="qi-sub">Learn by Teaching mode</div><div class="qi-bar"><div class="qi-bf" style="width:0%"></div></div></div><div class="qi-xp">+40 XP</div><div>⬜</div></div>
+        <div class="qi"><div style="font-size:1.1rem">🛡️</div><div class="qi-info"><div class="qi-title">Streak Insurance Active</div><div class="qi-sub">2 tokens left — safe to miss 1 day</div><div class="qi-bar"><div class="qi-bf" style="width:66%"></div></div></div><div class="qi-xp">Active</div><div>🛡️</div></div>
+      </div>
+      <div>
+        <div class="stitle">Skill Tree</div>
+        <div class="stm">
+          <div class="tr-root" onclick="go('skilltree',document.querySelector('.nlinks a:nth-child(2)'))">
+            <div>🏗️</div><div style="font-weight:700;font-size:.85rem;flex:1;color:var(--text)">Data Structures & Algorithms</div>
+            <span class="tag tmt">65% Complete</span>
+          </div>
+          <div class="tr-children">
+            <div class="tnd on">✅ Arrays</div><div class="tnd on">✅ Linked Lists</div>
+            <div class="tnd on">🔵 Trees</div><div class="tnd off">🔒 Graphs</div>
+            <div class="tnd sec" onclick="showToast('🌟','Secret Node!','Segment Trees unlocked! +400 XP')">🌟 Secret!</div>
+          </div>
+          <div class="ctip">🔍 <b>Curiosity Mode:</b> You mastered Sorting! <span class="ctl" onclick="showToast('🔍','Curiosity!','Netflix uses collaborative filtering + sorting to recommend shows!')">How does Netflix recommend movies?</span> Explore beyond the syllabus →</div>
+        </div>
+      </div>
+      <div>
+        <div class="stitle">Learning Squad</div>
+        <div class="sq-card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:11px">
+            <div style="font-weight:700;font-size:.9rem">🧑‍🤝‍🧑 Debug Squad</div>
+            <span class="tag tl">Rank #3</span>
+          </div>
+          <div style="display:flex;gap:6px;margin-bottom:10px">
+            <div class="sq-av" style="background:linear-gradient(135deg,var(--lav-500),var(--lav-400))">A</div>
+            <div class="sq-av" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">S</div>
+            <div class="sq-av" style="background:linear-gradient(135deg,#10b981,#06b6d4)">J</div>
+            <div class="sq-av" style="background:linear-gradient(135deg,#8b5cf6,#ec4899)">P</div>
+            <div style="width:32px;height:32px;border-radius:50%;border:2px dashed var(--border2);display:flex;align-items:center;justify-content:center;font-size:.8rem;color:var(--text3)">+</div>
+          </div>
+          <div style="font-size:.78rem;color:var(--text2);margin-bottom:9px">Goal: 20 challenges this week — <strong style="color:var(--primary)">14/20</strong></div>
+          <div class="sq-gb"><div class="sq-gbf" style="width:70%"></div></div>
+          <button class="btn bp" style="width:100%;font-size:.79rem;margin-top:10px" onclick="showToast('🧑‍🤝‍🧑','Squad Challenge!','Collaborate on a shared DSA problem set!')">Start Group Challenge →</button>
+        </div>
+      </div>
+    </div>
+    <div class="rcol">
+      <div>
+        <div class="stitle">Live Battles</div>
+        <div class="bt-teas">
+          <div style="display:flex;align-items:center;gap:11px;margin-bottom:10px">
+            <div class="sq-av" style="width:38px;height:38px;background:linear-gradient(135deg,var(--lav-500),var(--lav-400));border:2px solid var(--primary)">A</div>
+            <div style="font-family:'DM Serif Display',serif;font-size:1rem;color:var(--danger);flex:1;text-align:center">VS</div>
+            <div class="sq-av" style="width:38px;height:38px;background:linear-gradient(135deg,var(--danger),var(--gold-500));border:2px solid var(--danger)">?</div>
+          </div>
+          <div style="font-size:.79rem;color:var(--text2);margin-bottom:10px">3 players waiting. Your Elo: <strong style="color:var(--danger)">1240</strong></div>
+          <button class="btn br" style="width:100%;font-size:.79rem" onclick="go('battle',document.querySelector('.nlinks a:nth-child(4)'))">⚔️ Find Opponent</button>
+        </div>
+      </div>
+      <div>
+        <div class="stitle">Weekly Boss</div>
+        <div class="boss">
+          <span class="boss-e">🐉</span>
+          <div style="font-size:.66rem;color:var(--danger);letter-spacing:2px;font-weight:700;margin-bottom:3px">WEEKLY BOSS</div>
+          <div style="font-weight:700;font-size:.93rem;margin-bottom:3px;color:var(--text)">The Algorithm Dragon</div>
+          <div style="font-size:.74rem;color:var(--text3);margin-bottom:12px">Integrated DSA mega-challenge. Epic XP!</div>
+          <div class="boss-timer">
+            <div class="btu"><span class="bnum" id="bt-h">14</span><div class="btlbl">HRS</div></div>
+            <div class="bsep">:</div>
+            <div class="btu"><span class="bnum" id="bt-m">23</span><div class="btlbl">MIN</div></div>
+            <div class="bsep">:</div>
+            <div class="btu"><span class="bnum" id="bt-s">45</span><div class="btlbl">SEC</div></div>
+          </div>
+          <button class="btn br" style="width:100%" onclick="go('quiz',document.querySelector('.nlinks a:nth-child(3)'))">⚔️ FIGHT BOSS</button>
+        </div>
+      </div>
+      <div>
+        <div class="stitle">Leaderboard</div>
+        <div class="card" style="padding:14px">
+          <div class="mlbi"><div class="mlbr" style="color:var(--accent)">🥇</div><div class="mlbav" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">S</div><div class="mlbn">Sarah K.</div><div class="mlbx">4,820</div></div>
+          <div class="mlbi"><div class="mlbr" style="color:var(--text3)">🥈</div><div class="mlbav" style="background:linear-gradient(135deg,#3b82f6,#8b5cf6)">M</div><div class="mlbn">Mike R.</div><div class="mlbx">3,650</div></div>
+          <div class="mlbi"><div class="mlbr" style="color:#cd7c2f">🥉</div><div class="mlbav" style="background:linear-gradient(135deg,#10b981,#06b6d4)">J</div><div class="mlbn">Jenna L.</div><div class="mlbx">3,210</div></div>
+          <div class="mlbi"><div class="mlbr" style="color:var(--primary)">4</div><div class="mlbav" style="background:linear-gradient(135deg,var(--lav-500),var(--lav-400));border:2px solid var(--primary)">A</div><div class="mlbn" style="color:var(--primary);font-weight:700">You</div><div class="mlbx">2,360</div></div>
+          <div class="mlbi"><div class="mlbr">5</div><div class="mlbav" style="background:linear-gradient(135deg,#f43f5e,#f59e0b)">R</div><div class="mlbn">Rahul P.</div><div class="mlbx">1,980</div></div>
+          <div style="margin-top:11px"><button class="btn bg" style="width:100%;font-size:.77rem" onclick="go('leaderboard',document.querySelector('.nlinks a:nth-child(6)'))">Full Leaderboard →</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- SKILL TREE -->
+<div class="page" id="page-skilltree">
+<div class="stp">
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;gap:16px;flex-wrap:wrap">
+    <div><h2 style="font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--text)">🌳 Skill Tree</h2><p style="color:var(--text2);font-size:.84rem;margin-top:4px">Unlock knowledge like a game. Multiple paths. Secret nodes. Curiosity mode.</p></div>
+    <button class="btn bp" onclick="go('quiz',document.querySelector('.nlinks a:nth-child(3)'))">⚡ Start Learning</button>
+  </div>
+  <div class="subj-tabs">
+    <button class="stab active" onclick="switchTree(this,'dsa')">🏗️ DSA</button>
+    <button class="stab" onclick="switchTree(this,'ml')">🤖 Machine Learning</button>
+    <button class="stab" onclick="switchTree(this,'os')">💻 OS</button>
+    <button class="stab" onclick="switchTree(this,'db')">🗄️ Databases</button>
+    <button class="stab" onclick="switchTree(this,'net')">🌐 Networks</button>
+  </div>
+  <div class="tree-vis">
+    <div id="tr-dsa">
+      <div class="tree-lvl">
+        <div class="tnb mastered" onclick="goQ('Data Structures')"><div class="tni">📊</div><div class="tnl">Arrays</div><div class="tns" style="color:var(--a2)">✅ Mastered</div><div class="tnx">+240 XP</div></div>
+        <div class="tnb mastered" onclick="goQ('Data Structures')"><div class="tni">🔗</div><div class="tnl">Linked Lists</div><div class="tns" style="color:var(--a2)">✅ Mastered</div><div class="tnx">+180 XP</div></div>
+        <div class="tnb mastered" onclick="goQ('Data Structures')"><div class="tni">📦</div><div class="tnl">Stacks & Queues</div><div class="tns" style="color:var(--a2)">✅ Mastered</div><div class="tnx">+160 XP</div></div>
+      </div>
+      <div class="tconn"><div class="tline"></div></div>
+      <div class="tree-lvl">
+        <div class="tnb unlocked" onclick="goQ('Data Structures')"><div class="tni">🌳</div><div class="tnl">Trees</div><div class="tns" style="color:var(--primary)">🔵 In Progress</div><div class="tnx">+200 XP</div></div>
+        <div class="tnb unlocked" onclick="goQ('Data Structures')"><div class="tni">#️⃣</div><div class="tnl">Hashing</div><div class="tns" style="color:var(--primary)">🔵 Available</div><div class="tnx">+180 XP</div></div>
+        <div class="tnb unlocked" onclick="goQ('Data Structures')"><div class="tni">↕️</div><div class="tnl">Sorting</div><div class="tns" style="color:var(--primary)">🔵 Available</div><div class="tnx">+160 XP</div></div>
+      </div>
+      <div class="tconn"><div class="tline"></div></div>
+      <div class="tree-lvl">
+        <div class="tnb locked"><div class="tni">🔒</div><div class="tnl">Graphs</div><div class="tns">Unlock Trees first</div><div class="tnx">+280 XP</div></div>
+        <div class="tnb locked"><div class="tni">🔒</div><div class="tnl">Dynamic Prog.</div><div class="tns">Requires Recursion</div><div class="tnx">+320 XP</div></div>
+        <div class="tnb secret" onclick="showToast('🌟','Secret Node!','Segment Trees: +400 XP — Hidden path found!')"><div class="tni">🌟</div><div class="tnl">Segment Trees</div><div class="tns" style="color:var(--accent)">Hidden Challenge!</div><div class="tnx">+400 XP</div></div>
+      </div>
+      <div class="ctip" style="margin-top:20px">🔍 <b>Curiosity Mode:</b> <span class="ctl" onclick="showToast('🔍','Real World!','Merge Sort powers file systems. Quicksort is in most language sort() implementations!')">How do real languages implement sort()?</span> Or: <span class="ctl" onclick="showToast('🔍','Curiosity!','Google Maps uses Dijkstra\'s algorithm to find shortest routes.')">How does Google Maps work?</span></div>
+    </div>
+    <div id="tr-ml" style="display:none">
+      <div class="tree-lvl">
+        <div class="tnb mastered" onclick="goQ('Machine Learning')"><div class="tni">📈</div><div class="tnl">Linear Regression</div><div class="tns" style="color:var(--a2)">✅ Mastered</div><div class="tnx">+150 XP</div></div>
+        <div class="tnb unlocked" onclick="goQ('Machine Learning')"><div class="tni">🤖</div><div class="tnl">Classification</div><div class="tns" style="color:var(--primary)">🔵 Available</div><div class="tnx">+200 XP</div></div>
+        <div class="tnb locked"><div class="tni">🔒</div><div class="tnl">Neural Networks</div><div class="tns">Unlock Classification</div><div class="tnx">+350 XP</div></div>
+      </div>
+      <div class="ctip" style="margin-top:20px">🔍 <b>Curiosity Mode:</b> <span class="ctl" onclick="showToast('🔍','Real World!','Netflix uses ML classification to predict genres you\'ll enjoy!')">How does Netflix recommend movies?</span></div>
+    </div>
+    <div id="tr-os" style="display:none">
+      <div class="tree-lvl">
+        <div class="tnb unlocked" onclick="goQ('Operating Systems')"><div class="tni">💻</div><div class="tnl">Processes</div><div class="tns" style="color:var(--primary)">🔵 Available</div><div class="tnx">+160 XP</div></div>
+        <div class="tnb locked"><div class="tni">🔒</div><div class="tnl">Memory Management</div><div class="tns">Unlock Processes</div><div class="tnx">+200 XP</div></div>
+        <div class="tnb locked"><div class="tni">🔒</div><div class="tnl">File Systems</div><div class="tns">Unlock Memory</div><div class="tnx">+240 XP</div></div>
+      </div>
+    </div>
+    <div id="tr-db" style="display:none">
+      <div class="tree-lvl">
+        <div class="tnb unlocked" onclick="goQ('Database Systems')"><div class="tni">🗄️</div><div class="tnl">SQL Basics</div><div class="tns" style="color:var(--primary)">🔵 Available</div><div class="tnx">+140 XP</div></div>
+        <div class="tnb locked"><div class="tni">🔒</div><div class="tnl">Normalization</div><div class="tns">Unlock SQL first</div><div class="tnx">+180 XP</div></div>
+        <div class="tnb secret" onclick="showToast('🌟','Secret!','Build a mini search engine with SQL — secret micro project!')"><div class="tni">🔍</div><div class="tnl">Mini Search Engine</div><div class="tns" style="color:var(--accent)">Micro Project!</div><div class="tnx">+500 XP</div></div>
+      </div>
+    </div>
+    <div id="tr-net" style="display:none">
+      <div class="tree-lvl">
+        <div class="tnb mastered" onclick="goQ('Computer Networks')"><div class="tni">🌐</div><div class="tnl">OSI Model</div><div class="tns" style="color:var(--a2)">✅ Mastered</div><div class="tnx">+120 XP</div></div>
+        <div class="tnb unlocked" onclick="goQ('Computer Networks')"><div class="tni">🔗</div><div class="tnl">TCP/IP</div><div class="tns" style="color:var(--primary)">🔵 Available</div><div class="tnx">+160 XP</div></div>
+        <div class="tnb locked"><div class="tni">🔒</div><div class="tnl">Routing Protocols</div><div class="tns">Unlock TCP/IP</div><div class="tnx">+220 XP</div></div>
+      </div>
+    </div>
+    <div class="tleg">
+      <div class="tlegi"><div class="tdot" style="background:var(--a2)"></div>Mastered</div>
+      <div class="tlegi"><div class="tdot" style="background:var(--primary)"></div>Available</div>
+      <div class="tlegi"><div class="tdot" style="background:var(--text3)"></div>Locked</div>
+      <div class="tlegi"><div class="tdot" style="background:var(--accent)"></div>Secret / Micro Project</div>
+    </div>
+  </div>
+</div>
+</div>
+<!-- QUIZ -->
+<div class="page" id="page-quiz">
+<div class="qp">
+  <div style="text-align:center;margin-bottom:24px">
+    <h2 style="font-family:'DM Serif Display',serif;font-size:1.7rem;color:var(--text);margin-bottom:5px">⚡ AI Challenge Arena</h2>
+    <p style="color:var(--text2);font-size:.87rem">Adaptive AI quizzes, Reverse mode, Story mode & Learn by Teaching.</p>
+    <div style="margin-top:10px"><span class="tag tl">🧠 Adaptive Engine — auto-adjusting difficulty</span></div>
+  </div>
+  <div class="mode-tabs">
+    <button class="mtab active" onclick="setMode('quiz',this)">🎯 Quiz Mode</button>
+    <button class="mtab" onclick="setMode('reverse',this)">🔄 Reverse Mode</button>
+    <button class="mtab" onclick="setMode('story',this)">🎭 Story Mode</button>
+    <button class="mtab" onclick="setMode('teach',this)">📖 Teach Mode</button>
+  </div>
+  <div class="sel-card" id="quiz-sel">
+    <div style="font-size:.68rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:10px">Choose Topic</div>
+    <div class="tgrid">
+      <button class="tbtn" onclick="selT(this,'Data Structures')">🏗️ Data Structures</button>
+      <button class="tbtn" onclick="selT(this,'Machine Learning')">🤖 Machine Learning</button>
+      <button class="tbtn" onclick="selT(this,'Operating Systems')">💻 Operating Systems</button>
+      <button class="tbtn" onclick="selT(this,'Computer Networks')">🌐 Computer Networks</button>
+      <button class="tbtn" onclick="selT(this,'Mathematics')">📐 Mathematics</button>
+      <button class="tbtn" onclick="selT(this,'Database Systems')">🗄️ Database Systems</button>
+    </div>
+    <div style="font-size:.68rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:10px">Difficulty</div>
+    <div class="drow">
+      <button class="dbtn easy" onclick="selD(this,'easy')">🟢 Easy</button>
+      <button class="dbtn med sel" onclick="selD(this,'medium')">🟡 Medium</button>
+      <button class="dbtn hard" onclick="selD(this,'hard')">🔴 Hard</button>
+    </div>
+    <div class="adapt-info"><b>🧠 Adaptive Engine:</b> Accuracy &gt;80% + fast → level up. &lt;50% → easier. Emotion-aware adjustments included.</div>
+    <button class="sbtn" id="sbtn" onclick="startQuiz()" disabled>SELECT A TOPIC TO BEGIN →</button>
+  </div>
+  <div id="reverse-card" style="display:none">
+    <div class="sel-card" style="margin-bottom:0">
+      <div style="display:flex;align-items:center;gap:11px;margin-bottom:18px">
+        <div style="font-size:1.6rem">🔄</div>
+        <div><div style="font-weight:700;font-size:1.05rem;color:var(--text)">Reverse Learning Mode</div><div style="font-size:.79rem;color:var(--text3)">See the output → write the logic that produces it</div></div>
+      </div>
+      <div style="font-size:.73rem;color:var(--text3);margin-bottom:6px;font-weight:600;letter-spacing:1px;text-transform:uppercase">Expected Output</div>
+      <div class="output-box" id="rev-output">1  4  9  16  25</div>
+      <div style="font-size:.83rem;color:var(--text2);margin-bottom:9px">Write code/logic that produces the output above:</div>
+      <textarea class="code-input" id="rev-input" placeholder="# Write your solution here...&#10;for i in range(1, 6):&#10;    print(i**2, end=' ')"></textarea>
+      <div style="display:flex;gap:9px">
+        <button class="btn bp" onclick="evalReverse()">⚡ Evaluate with AI</button>
+        <button class="btn bg" onclick="newReverseQ()">Next Challenge →</button>
+      </div>
+      <div id="rev-feedback" style="margin-top:13px;display:none;background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.16);border-radius:12px;padding:13px;font-size:.81rem;color:var(--text2)"></div>
+    </div>
+  </div>
+  <div id="story-card" style="display:none">
+    <div class="sel-card" style="margin-bottom:0">
+      <div style="display:flex;align-items:center;gap:11px;margin-bottom:16px">
+        <div style="font-size:1.6rem">🎭</div>
+        <div><div style="font-weight:700;font-size:1.05rem;color:var(--text)">Story-Based Learning</div><div style="font-size:.79rem;color:var(--text3)">You're a developer at a startup. Save the company!</div></div>
+      </div>
+      <div class="story-scene">🏢 <strong>Day 1, 9:00 AM.</strong> You've just joined ByteForge Startup. The app is crashing. Your team lead: <em>"The search feature is O(n²). Fix it before the investor demo in 2 hours!"</em></div>
+      <div style="font-size:.83rem;color:var(--text);font-weight:500;margin-bottom:15px">🎯 <strong>Mission:</strong> Which algorithm improves search from O(n²)?</div>
+      <div class="opts" style="display:grid;grid-template-columns:1fr 1fr;gap:9px">
+        <button class="opt" onclick="storyAns(this,false)"><span class="olbl">A</span>Bubble Sort (O(n²))</button>
+        <button class="opt" onclick="storyAns(this,true)"><span class="olbl">B</span>Binary Search + Sort (O(n log n))</button>
+        <button class="opt" onclick="storyAns(this,false)"><span class="olbl">C</span>Linear Search (O(n))</button>
+        <button class="opt" onclick="storyAns(this,false)"><span class="olbl">D</span>Brute force harder</button>
+      </div>
+      <div id="story-fb" style="margin-top:13px;display:none"></div>
+      <div style="margin-top:13px;text-align:center"><button class="btn bg" id="story-next" onclick="nextStory()" style="display:none">Next Chapter →</button></div>
+    </div>
+  </div>
+  <div id="teach-card" style="display:none">
+    <div class="sel-card" style="margin-bottom:0">
+      <div style="display:flex;align-items:center;gap:11px;margin-bottom:16px">
+        <div style="font-size:1.6rem">📖</div>
+        <div><div style="font-weight:700;font-size:1.05rem;color:var(--text)">Learn by Teaching</div><div style="font-size:.79rem;color:var(--text3)">Explain a concept — AI evaluates clarity. Earn XP + community votes!</div></div>
+      </div>
+      <div style="font-size:.83rem;color:var(--text2);margin-bottom:11px">📚 Concept: <strong style="color:var(--primary)">What is recursion and when should you use it?</strong></div>
+      <textarea class="code-input" id="teach-input" placeholder="Explain recursion in your own words... Use factorial or fibonacci as an example..."></textarea>
+      <div style="display:flex;gap:9px;margin-top:11px">
+        <button class="btn bp" onclick="evalTeach()">🤖 AI Evaluate My Explanation</button>
+        <button class="btn bg" onclick="showToast('👍','Upvoted!','Your explanation got 3 community upvotes! +15 XP')">👍 Submit to Community</button>
+      </div>
+      <div id="teach-fb" style="margin-top:13px;display:none;background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.16);border-radius:12px;padding:13px;font-size:.81rem;color:var(--text2)"></div>
+    </div>
+  </div>
+  <div class="qload" id="qload" style="display:none">
+    <div class="spinner"></div>
+    <div class="lt">🤖 AI crafting your personalized challenge...</div>
+    <div class="ls">Adaptive engine calibrating to your level &amp; emotional state</div>
+  </div>
+  <div id="qactive" style="display:none">
+    <div class="q-meta">
+      <div class="q-counter">Question <span id="qnum">1</span> of 5</div>
+      <div class="qdp med" id="qdp">🟡 Medium</div>
+      <div class="qtimer">⏱ <span id="qtm">30</span>s</div>
+    </div>
+    <div class="qprog"><div class="qpf" id="qpf" style="width:20%"></div></div>
+    <div class="qcard">
+      <div class="qtopic" id="qtopic">DATA STRUCTURES</div>
+      <div class="qtext" id="qtext">Loading...</div>
+      <div class="opts" id="opts"></div>
+      <div class="replay-panel" id="replay-panel"><div class="replay-title">🧠 How Top Students Think</div><div id="replay-steps"></div></div>
+      <div class="mist-p" id="mistp"><div class="mp-ttl">💡 Mistake Intelligence</div><div class="mp-tags" id="mptags"></div><div class="mp-gap" id="mpgap"></div></div>
+      <div class="adapt-up" id="adup"></div>
+    </div>
+    <div style="text-align:center;margin-top:14px"><button class="btn bg" id="nxtbtn" onclick="nextQ()" style="display:none">Next Question →</button></div>
+  </div>
+  <div class="rcard" id="rcard">
+    <div style="font-size:2rem;margin-bottom:7px" id="remo">🎉</div>
+    <div class="rscore" id="rscore">4/5</div>
+    <div class="rlbl" id="rlbl">Excellent!</div>
+    <div class="ar" id="ares">🧠 Difficulty increases next session</div>
+    <div class="rsts">
+      <div class="rsi"><div class="rsv" style="color:var(--a2)" id="rcor">4</div><div class="rsl">Correct</div></div>
+      <div class="rsi"><div class="rsv" style="color:var(--danger)" id="rwrg">1</div><div class="rsl">Wrong</div></div>
+      <div class="rsi"><div class="rsv" style="color:var(--primary)" id="racc">80%</div><div class="rsl">Accuracy</div></div>
+      <div class="rsi"><div class="rsv" style="color:var(--accent)" id="rtm">2m</div><div class="rsl">Time</div></div>
+    </div>
+    <div class="xpg">✦ +<span id="rxp">200</span> XP Earned!</div>
+    <div class="career-result">
+      <div class="cr-title">🚀 Career Path Progress</div>
+      <div class="cr-item"><span>Backend Developer Track</span><span class="cr-val">+3% progress</span></div>
+      <div class="cr-item"><span>DSA Skill Certification</span><span class="cr-val">68% complete</span></div>
+      <div class="cr-item"><span>Next milestone</span><span class="cr-val">4 more quizzes</span></div>
+    </div>
+    <div class="msum" id="msum" style="display:none"><div class="mst">🧠 Mistake Intelligence Report</div><div id="mlist"></div></div>
+    <div class="ract">
+      <button class="btn bp" onclick="playAgain()">Play Again</button>
+      <button class="btn br" onclick="go('battle',document.querySelector('.nlinks a:nth-child(4)'))">⚔️ Battle Now</button>
+      <button class="btn bg" onclick="go('progress',document.querySelector('.nlinks a:nth-child(6)'))">Progress</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- BATTLE -->
+<div class="page" id="page-battle">
+<div class="pb-page">
+  <h2 style="font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--danger);margin-bottom:4px">⚔️ Peer Battle Arena</h2>
+  <p style="color:var(--text2);font-size:.84rem;margin-bottom:20px">1v1 quiz duels. Fastest correct answer wins. Elo ranking system.</p>
+  <div class="pb-status">
+    <div class="pb-stat"><div class="pb-stat-v" style="color:var(--danger)">1240</div><div class="pb-stat-l">Your Elo Rating</div></div>
+    <div class="pb-stat"><div class="pb-stat-v" style="color:var(--a2)">12W</div><div class="pb-stat-l">Wins</div></div>
+    <div class="pb-stat"><div class="pb-stat-v" style="color:var(--danger)">3L</div><div class="pb-stat-l">Losses</div></div>
+    <div class="pb-stat"><div class="pb-stat-v" style="color:var(--accent)">#4</div><div class="pb-stat-l">Battle Rank</div></div>
+  </div>
+  <div class="mm-card" id="mm-card">
+    <div style="font-size:.68rem;font-weight:700;letter-spacing:2px;color:var(--text3);text-transform:uppercase;margin-bottom:16px">MATCHMAKING — Players Near Your Level</div>
+    <div class="mm-row">
+      <div class="mlbav" style="background:linear-gradient(135deg,#f43f5e,#f59e0b);width:38px;height:38px">R</div>
+      <div style="flex:1"><div style="font-weight:700;font-size:.87rem">Rahul P.</div><div style="font-size:.71rem;color:var(--text3)">Elo 1210 · Level 10</div></div>
+      <span class="tag tr2">Elo: 1210</span>
+      <button class="btn br" style="margin-left:10px;font-size:.77rem" onclick="startBattle('Rahul P.',1210,'R','linear-gradient(135deg,#f43f5e,#f59e0b)')">⚔️ Challenge</button>
+    </div>
+    <div class="mm-row">
+      <div class="mlbav" style="background:linear-gradient(135deg,#8b5cf6,#ec4899);width:38px;height:38px">P</div>
+      <div style="flex:1"><div style="font-weight:700;font-size:.87rem">Priya S.</div><div style="font-size:.71rem;color:var(--text3)">Elo 1270 · Level 9</div></div>
+      <span class="tag tl">Elo: 1270</span>
+      <button class="btn br" style="margin-left:10px;font-size:.77rem" onclick="startBattle('Priya S.',1270,'P','linear-gradient(135deg,#8b5cf6,#ec4899)')">⚔️ Challenge</button>
+    </div>
+    <div class="mm-row">
+      <div class="mlbav" style="background:linear-gradient(135deg,#06b6d4,#10b981);width:38px;height:38px">T</div>
+      <div style="flex:1"><div style="font-weight:700;font-size:.87rem">Tom W.</div><div style="font-size:.71rem;color:var(--text3)">Elo 1195 · Level 8</div></div>
+      <span class="tag tsk">Elo: 1195</span>
+      <button class="btn br" style="margin-left:10px;font-size:.77rem" onclick="startBattle('Tom W.',1195,'T','linear-gradient(135deg,#06b6d4,#10b981)')">⚔️ Challenge</button>
+    </div>
+    <div style="margin-top:16px;text-align:center">
+      <button class="btn bp" onclick="startBattle('Random',1230,'?','linear-gradient(135deg,var(--lav-500),var(--lav-300))')">🎲 Quick Match (Random)</button>
+    </div>
+  </div>
+  <div class="pb-arena" id="pb-arena" style="display:none">
+    <div class="pb-players">
+      <div class="pb-player">
+        <div class="pb-pav" style="background:linear-gradient(135deg,var(--lav-500),var(--lav-400));border-color:var(--primary)">A</div>
+        <div class="pb-pname">You (Alex)</div>
+        <div class="pb-pelo">Elo: 1240</div>
+        <div class="pb-pbar"><div class="pb-pbf" id="pb-my-bar" style="width:0%;background:linear-gradient(90deg,var(--lav-500),var(--lav-300))"></div></div>
+      </div>
+      <div class="pb-vs">VS</div>
+      <div class="pb-player">
+        <div class="pb-pav" id="pb-opp-av" style="background:linear-gradient(135deg,#f43f5e,#f59e0b);border-color:var(--danger)">R</div>
+        <div class="pb-pname" id="pb-opp-name">Rahul P.</div>
+        <div class="pb-pelo" id="pb-opp-elo">Elo: 1210</div>
+        <div class="pb-pbar"><div class="pb-pbf" id="pb-opp-bar" style="width:0%;background:linear-gradient(90deg,var(--danger),var(--gold-400))"></div></div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:13px;flex-wrap:wrap;gap:8px">
+      <div style="font-size:.75rem;color:var(--text3);font-weight:600">Round <span id="pb-round">1</span>/5</div>
+      <div class="qtimer">⏱ <span id="pb-time">15</span>s</div>
+      <div style="font-size:.82rem;color:var(--danger);font-weight:700">Score: <span id="pb-score-me">0</span> — <span id="pb-score-opp">0</span></div>
+    </div>
+    <div class="pb-q">
+      <div class="pb-qtext" id="pb-qtext">Loading battle question...</div>
+      <div class="pb-opts" id="pb-opts"></div>
+    </div>
+    <div class="pb-feed" id="pb-feed"></div>
+  </div>
+</div>
+</div>
+
+<!-- LEADERBOARD -->
+<div class="page" id="page-leaderboard">
+<div class="lbp">
+  <h2 style="font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--text);margin-bottom:4px">🏆 Leaderboard</h2>
+  <p style="color:var(--text2);margin-bottom:20px;font-size:.84rem">Compete, climb, conquer. Battle rank + learning rank combined.</p>
+  <div class="lb-tabs">
+    <button class="lbt active" onclick="activeLbt(this)">This Week</button>
+    <button class="lbt" onclick="activeLbt(this)">This Month</button>
+    <button class="lbt" onclick="activeLbt(this)">All Time</button>
+    <button class="lbt" onclick="activeLbt(this)">Battle Rank</button>
+  </div>
+  <div class="lbi"><div class="lbr" style="color:var(--accent)">🥇</div><div class="lbav" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">S</div><div class="lbinf"><div class="lbname">Sarah Kim</div><div class="lblvl">Level 18 — Grand Master</div></div><div class="lbbd">🔥⚡👑</div><div class="lbst">🔥 21d</div><div class="lbxp">4,820 XP</div></div>
+  <div class="lbi"><div class="lbr" style="color:var(--text3)">🥈</div><div class="lbav" style="background:linear-gradient(135deg,#3b82f6,#8b5cf6)">M</div><div class="lbinf"><div class="lbname">Mike Rodriguez</div><div class="lblvl">Level 15 — Expert</div></div><div class="lbbd">🎯🧠</div><div class="lbst">🔥 14d</div><div class="lbxp">3,650 XP</div></div>
+  <div class="lbi"><div class="lbr" style="color:#cd7c2f">🥉</div><div class="lbav" style="background:linear-gradient(135deg,#10b981,#06b6d4)">J</div><div class="lbinf"><div class="lbname">Jenna Liu</div><div class="lblvl">Level 14 — Expert</div></div><div class="lbbd">🔥🌟</div><div class="lbst">🔥 10d</div><div class="lbxp">3,210 XP</div></div>
+  <div class="lbi me"><div class="lbr" style="color:var(--primary)">4</div><div class="lbav" style="background:linear-gradient(135deg,var(--lav-500),var(--lav-400));border:2px solid var(--primary)">A</div><div class="lbinf"><div class="lbname" style="color:var(--primary)">You (Alex)</div><div class="lblvl">Level 12 — Scholar</div></div><div class="lbbd">🔥⚡🎯⚔️</div><div class="lbst">🔥 7d</div><div class="lbxp">2,360 XP</div></div>
+  <div class="lbi"><div class="lbr">5</div><div class="lbav" style="background:linear-gradient(135deg,#f43f5e,#f59e0b)">R</div><div class="lbinf"><div class="lbname">Rahul Patel</div><div class="lblvl">Level 10 — Advanced</div></div><div class="lbbd">🧠</div><div class="lbst">🔥 5d</div><div class="lbxp">1,980 XP</div></div>
+  <div class="lbi"><div class="lbr">6</div><div class="lbav" style="background:linear-gradient(135deg,#8b5cf6,#ec4899)">P</div><div class="lbinf"><div class="lbname">Priya Sharma</div><div class="lblvl">Level 9 — Intermediate</div></div><div class="lbbd">🎯</div><div class="lbst">🔥 3d</div><div class="lbxp">1,740 XP</div></div>
+  <div class="lbi"><div class="lbr">7</div><div class="lbav" style="background:linear-gradient(135deg,#06b6d4,#10b981)">T</div><div class="lbinf"><div class="lbname">Tom Wilson</div><div class="lblvl">Level 8 — Intermediate</div></div><div class="lbbd"></div><div class="lbst">🔥 2d</div><div class="lbxp">1,520 XP</div></div>
+</div>
+</div>
+<!-- PROGRESS -->
+<div class="page" id="page-progress">
+<div class="prp">
+  <h2 style="font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--text)">📊 Progress Dashboard</h2>
+  <p style="color:var(--text2);font-size:.84rem">AI-powered insights. Career tracking. Smart predictions.</p>
+  <div class="pgrid">
+    <div class="pcard">
+      <h3>Skill Mastery</h3>
+      <div class="ski"><div class="skr"><span>Data Structures</span><span class="skpct">65%</span></div><div class="skb"><div class="skbf" style="width:65%;background:linear-gradient(90deg,var(--lav-500),var(--lav-300))"></div></div></div>
+      <div class="ski"><div class="skr"><span>Computer Networks</span><span class="skpct">55%</span></div><div class="skb"><div class="skbf" style="width:55%;background:linear-gradient(90deg,var(--lav-600),var(--danger))"></div></div></div>
+      <div class="ski"><div class="skr"><span>Database Systems</span><span class="skpct">45%</span></div><div class="skb"><div class="skbf" style="width:45%;background:linear-gradient(90deg,var(--danger),var(--lav-500))"></div></div></div>
+      <div class="ski"><div class="skr"><span>Machine Learning</span><span class="skpct">40%</span></div><div class="skb"><div class="skbf" style="width:40%;background:linear-gradient(90deg,var(--mint-500),var(--lav-400))"></div></div></div>
+      <div class="ski"><div class="skr"><span>Operating Systems</span><span class="skpct">30%</span></div><div class="skb"><div class="skbf" style="width:30%;background:linear-gradient(90deg,var(--gold-500),var(--danger))"></div></div></div>
+      <div class="ski"><div class="skr"><span>Mathematics</span><span class="skpct">25%</span></div><div class="skb"><div class="skbf" style="width:25%;background:linear-gradient(90deg,var(--mint-500),var(--gold-400))"></div></div></div>
+      <div class="pred"><div class="predt">🤖 AI Predictions</div>
+        <div class="predi"><span>Master DSA</span><span class="predv">~21 days</span></div>
+        <div class="predi"><span>Reach Level 15</span><span class="predv">~30 days</span></div>
+        <div class="predi"><span>Top 3 Leaderboard</span><span class="predv">~45 days</span></div>
+        <div class="predi"><span>Placement-ready</span><span class="predv">~90 days</span></div>
+      </div>
+    </div>
+    <div class="pcard">
+      <h3>Activity Heatmap (13 Weeks)</h3>
+      <div class="hm" id="hm"></div>
+      <div style="display:flex;align-items:center;gap:5px;margin-top:8px;font-size:.69rem;color:var(--text3)"><span>Less</span><div style="width:8px;height:8px;border-radius:2px;background:var(--border)"></div><div style="width:8px;height:8px;border-radius:2px;background:rgba(168,85,247,.18)"></div><div style="width:8px;height:8px;border-radius:2px;background:rgba(168,85,247,.34)"></div><div style="width:8px;height:8px;border-radius:2px;background:rgba(168,85,247,.56)"></div><div style="width:8px;height:8px;border-radius:2px;background:rgba(168,85,247,.8)"></div><span>More</span></div>
+      <div style="margin-top:20px">
+        <h3 style="font-size:.67rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--text3);margin-bottom:14px">Recent Activity</h3>
+        <div class="ai"><div class="aico" style="background:rgba(168,85,247,.1)">🏗️</div><div class="atxt">Data Structures Quiz<div class="atm">2 hrs ago</div></div><div class="axp">+120 XP</div></div>
+        <div class="ai"><div class="aico" style="background:rgba(244,63,94,.08)">⚔️</div><div class="atxt">Won Peer Battle vs Rahul<div class="atm">Yesterday</div></div><div class="axp">+80 XP</div></div>
+        <div class="ai"><div class="aico" style="background:rgba(52,211,153,.08)">📖</div><div class="atxt">Taught Recursion concept<div class="atm">2 days ago</div></div><div class="axp">+40 XP</div></div>
+        <div class="ai"><div class="aico" style="background:rgba(56,189,248,.08)">🌐</div><div class="atxt">Networks Challenge<div class="atm">3 days ago</div></div><div class="axp">+160 XP</div></div>
+        <div class="ai"><div class="aico" style="background:rgba(251,191,36,.08)">✦</div><div class="atxt">Level 12 Achieved!<div class="atm">4 days ago</div></div><div class="axp">+200 XP</div></div>
+      </div>
+    </div>
+    <div style="grid-column:1/-1">
+      <div class="pcard career-sim">
+        <div class="cs-header">
+          <h3 style="margin-bottom:0;font-size:.67rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--text3)">🚀 Career Path Simulation</h3>
+          <button class="btn bg" style="font-size:.77rem" onclick="showToast('🎓','Certificate!','Downloading Backend Developer progress certificate!')">📜 Get Certificate</button>
+        </div>
+        <div class="cs-track">
+          <div class="cst active">💻 Backend Dev</div>
+          <div class="cst" onclick="activateTrack(this)">📊 Data Scientist</div>
+          <div class="cst" onclick="activateTrack(this)">🌐 Full Stack</div>
+          <div class="cst" onclick="activateTrack(this)">🤖 ML Engineer</div>
+        </div>
+        <div class="cs-task"><div class="cs-task-hdr"><div class="cs-task-name">📝 Design a REST API</div><div class="cs-deadline">⏰ Due in 2 days</div></div><div class="cs-task-desc">Create endpoints for a todo app with authentication. Simulate a real code review.</div><div class="cs-progress"><div class="cs-pf" style="width:70%"></div></div></div>
+        <div class="cs-task"><div class="cs-task-hdr"><div class="cs-task-name">🗄️ Optimize DB Queries</div><div class="cs-deadline">⏰ Due in 5 days</div></div><div class="cs-task-desc">Reduce query time from 2s to under 100ms. Index strategy challenge.</div><div class="cs-progress"><div class="cs-pf" style="width:30%"></div></div></div>
+        <div class="cs-task"><div class="cs-task-hdr"><div class="cs-task-name">🔒 Implement Auth System</div><div class="cs-deadline">⏰ Due in 7 days</div></div><div class="cs-task-desc">JWT-based auth with refresh tokens. Security best practices.</div><div class="cs-progress"><div class="cs-pf" style="width:10%"></div></div></div>
+      </div>
+    </div>
+    <div class="pcard" style="grid-column:1/-1">
+      <h3>Badge Collection</h3>
+      <div class="bggrid">
+        <div class="bgc on"><div class="bge">🔥</div><div class="bgn">Streak Master</div><div class="bgd">7-day streak</div></div>
+        <div class="bgc on"><div class="bge">⚡</div><div class="bgn">Speed Demon</div><div class="bgd">Under 60s quiz</div></div>
+        <div class="bgc on"><div class="bge">🎯</div><div class="bgn">Sharpshooter</div><div class="bgd">90%+ accuracy</div></div>
+        <div class="bgc on"><div class="bge">🧠</div><div class="bgn">Brain Power</div><div class="bgd">10 quizzes done</div></div>
+        <div class="bgc on"><div class="bge">⚔️</div><div class="bgn">Battle Winner</div><div class="bgd">Won 10 battles</div></div>
+        <div class="bgc on"><div class="bge">📖</div><div class="bgn">Teacher</div><div class="bgd">Taught 5 concepts</div></div>
+        <div class="bgc off"><div class="bge">👑</div><div class="bgn">Quiz King</div><div class="bgd">Reach #1</div></div>
+        <div class="bgc off"><div class="bge">🌟</div><div class="bgn">Perfect Score</div><div class="bgd">5/5 on Hard</div></div>
+        <div class="bgc off"><div class="bge">🔄</div><div class="bgn">Reverse Master</div><div class="bgd">10 reverse wins</div></div>
+        <div class="bgc off"><div class="bge">🎭</div><div class="bgn">Story Hero</div><div class="bgd">Complete story arc</div></div>
+        <div class="bgc off"><div class="bge">💎</div><div class="bgn">Diamond Mind</div><div class="bgd">Level 20</div></div>
+        <div class="bgc off"><div class="bge">🎓</div><div class="bgn">Graduated</div><div class="bgd">Master all subjects</div></div>
+      </div>
+    </div>
+    <div class="pcard" style="grid-column:1/-1">
+      <h3>📁 Portfolio Builder</h3>
+      <div class="pti"><div class="ptih"><div class="ptin">🔗 Linked List Reversal</div><div class="ptid hard">Hard</div></div><div class="ptdesc">In-place reversal — O(1) space, O(n) time. Auto-added from Career Sim.</div><div class="pttags"><span class="pttag">C++</span><span class="pttag">Pointers</span><span class="pttag">DSA</span></div><span class="ptshare" onclick="showToast('📁','Link Copied!','Share with recruiters or GitHub!')">🔗 Copy shareable link</span></div>
+      <div class="pti"><div class="ptih"><div class="ptin">🌳 Binary Search Tree</div><div class="ptid med">Medium</div></div><div class="ptdesc">Complete BST with all traversal algorithms. Verified by AI mentor.</div><div class="pttags"><span class="pttag">Python</span><span class="pttag">Recursion</span><span class="pttag">Trees</span></div><span class="ptshare" onclick="showToast('📁','Link Copied!','Share with recruiters!')">🔗 Copy shareable link</span></div>
+      <div class="pti"><div class="ptih"><div class="ptin">🗄️ Mini SQL Engine</div><div class="ptid med">Medium</div></div><div class="ptdesc">From Curiosity Mode! Built after exploring "how does search work?"</div><div class="pttags"><span class="pttag">Python</span><span class="pttag">SQL</span><span class="pttag">Databases</span></div><span class="ptshare" onclick="showToast('📁','Link Copied!','Share with recruiters!')">🔗 Copy shareable link</span></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- MENTOR -->
+<div class="page" id="page-mentor">
+<div class="mentor-page">
+  <h2 style="font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--primary);margin-bottom:4px">🤖 AI Mentor</h2>
+  <p style="color:var(--text2);font-size:.84rem;margin-bottom:20px">Your personal AI coach. Ask anything. Get a personalized study plan.</p>
+  <div class="mentor-chat">
+    <div class="chat-msgs" id="chat-msgs">
+      <div class="chat-msg ai"><div class="msg-name">🤖 MENTOR AI</div>Hey Alex! I've analyzed your performance. You're crushing DSA arrays but struggling with tree traversal. Focus on Trees today — you're 78% toward mastering it. Want a 7-day study plan? 🎯</div>
+      <div class="chat-msg ai"><div class="msg-name">🤖 MENTOR AI</div>Also noticed you haven't practiced Computer Networks in 5 days. Missing: TCP/IP handshake, routing algorithms. Shall I add them to your plan?</div>
+      <div class="chat-msg ai"><div class="msg-name">🤖 MENTOR AI</div>💪 Your streak is at 7 days! Don't break it. Even 15 minutes helps. I believe in you!</div>
+    </div>
+    <div class="mentor-quick">
+      <div class="mq" onclick="sendMsg('Explain binary trees to me')">Explain binary trees</div>
+      <div class="mq" onclick="sendMsg('Give me a study plan for this week')">Study plan</div>
+      <div class="mq" onclick="sendMsg('What are my weakest topics?')">My weaknesses</div>
+      <div class="mq" onclick="sendMsg('How do I prepare for placements?')">Placement prep</div>
+      <div class="mq" onclick="sendMsg('Motivate me! I feel stuck.')">Motivate me!</div>
+    </div>
+    <div class="chat-input-row">
+      <input class="chat-input" id="chat-in" placeholder="Ask your mentor anything..." onkeypress="if(event.key==='Enter')sendMsg()"/>
+      <button class="btn bp" onclick="sendMsg()">Send →</button>
+    </div>
+  </div>
+  <div class="study-plan">
+    <h3 style="font-size:.67rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--text3);margin-bottom:16px">🗓️ AI Study Plan — This Week</h3>
+    <div class="sp-day"><div class="sp-d">MON</div><div class="sp-task">Trees: Inorder, Preorder traversal + 5 problems</div><div class="sp-dur">45 min</div><div class="sp-done checked" onclick="this.classList.toggle('checked')">✓</div></div>
+    <div class="sp-day"><div class="sp-d">TUE</div><div class="sp-task">Trees: BST insertion & search</div><div class="sp-dur">40 min</div><div class="sp-done checked" onclick="this.classList.toggle('checked')">✓</div></div>
+    <div class="sp-day"><div class="sp-d">WED</div><div class="sp-task">Peer Battle practice (3 rounds)</div><div class="sp-dur">30 min</div><div class="sp-done" onclick="this.classList.toggle('checked')"></div></div>
+    <div class="sp-day"><div class="sp-d">THU</div><div class="sp-task">TCP/IP: 3-way handshake + quiz</div><div class="sp-dur">35 min</div><div class="sp-done" onclick="this.classList.toggle('checked')"></div></div>
+    <div class="sp-day"><div class="sp-d">FRI</div><div class="sp-task">Reverse Mode: Algorithm outputs (5 problems)</div><div class="sp-dur">40 min</div><div class="sp-done" onclick="this.classList.toggle('checked')"></div></div>
+    <div class="sp-day"><div class="sp-d">SAT</div><div class="sp-task">Story Mode: Startup bug-fix simulation</div><div class="sp-dur">50 min</div><div class="sp-done" onclick="this.classList.toggle('checked')"></div></div>
+    <div class="sp-day"><div class="sp-d">SUN</div><div class="sp-task">Review week + Boss Battle attempt</div><div class="sp-dur">60 min</div><div class="sp-done" onclick="this.classList.toggle('checked')"></div></div>
+  </div>
+</div>
+</div>
+
+</div><!-- end app -->
+
+<div class="toast" id="toast"><div class="ti" id="ti">🎉</div><div><div class="tt" id="tt">Done!</div><div class="tm" id="tm">Well done!</div></div></div>
+<div class="luov" id="luov" onclick="this.classList.remove('show')">
+  <div class="lumod"><div class="lue">🏆</div><div class="lut">LEVEL UP!</div><div class="lunum" id="lunum">13</div><div class="lusub" id="lusub">You've reached Expert level!</div><button class="btn bp" onclick="document.getElementById('luov').classList.remove('show')">Awesome! →</button></div>
+</div>
+<script>
+// THEME
+function toggleTheme(){
+  const h=document.documentElement,d=h.getAttribute('data-theme')==='dark';
+  h.setAttribute('data-theme',d?'light':'dark');
+  document.getElementById('ticon').textContent=d?'☀️':'🌙';
+}
+
+// NAVIGATION
+function go(name,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nlinks a').forEach(a=>a.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  if(el)el.classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// BOSS TIMER
+let bS=14*3600+23*60+45;
+setInterval(()=>{
+  bS=Math.max(0,bS-1);
+  const h=Math.floor(bS/3600),m=Math.floor((bS%3600)/60),s=bS%60;
+  const bh=document.getElementById('bt-h'),bm=document.getElementById('bt-m'),bs=document.getElementById('bt-s');
+  if(bh)bh.textContent=String(h).padStart(2,'0');
+  if(bm)bm.textContent=String(m).padStart(2,'0');
+  if(bs)bs.textContent=String(s).padStart(2,'0');
+},1000);
+
+// HEATMAP
+(function(){
+  const el=document.getElementById('hm');if(!el)return;
+  for(let i=0;i<91;i++){const c=document.createElement('div'),r=Math.random();c.className='hmc '+(r<.28?'':(r<.52?'l1':(r<.73?'l2':(r<.9?'l3':'l4'))));el.appendChild(c);}
+})();
+
+// LB TABS
+function activeLbt(b){document.querySelectorAll('.lbt').forEach(x=>x.classList.remove('active'));b.classList.add('active');}
+
+// SKILL TREE
+function switchTree(btn,id){
+  document.querySelectorAll('.stab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  ['dsa','ml','os','db','net'].forEach(t=>{const el=document.getElementById('tr-'+t);if(el)el.style.display=(t===id)?'block':'none';});
+}
+function goQ(topic){
+  go('quiz',document.querySelector('.nlinks a:nth-child(3)'));
+  setTimeout(()=>{const b=Array.from(document.querySelectorAll('.tbtn')).find(b=>b.textContent.toLowerCase().includes(topic.toLowerCase().split(' ')[0]));if(b)selT(b,topic);},150);
+}
+function activateTrack(el){el.closest('.cs-track').querySelectorAll('.cst').forEach(c=>c.classList.remove('active'));el.classList.add('active');}
+
+// EMOTION
+const emos=[
+  {cls:'happy',ico:'😊',msg:"You're in a great mood! Perfect time for a hard challenge. Adaptive engine boosting difficulty."},
+  {cls:'frustrated',ico:'😤',msg:"Looks like you're frustrated. Switching to easier mode and shorter sessions. You've got this! 💪"},
+  {cls:'tired',ico:'😴',msg:"You seem tired. Burnout detector triggered — take a 10-min break first. Then try a light revision."}
+];
+let emoIdx=0;
+function cycleEmo(){
+  emoIdx=(emoIdx+1)%emos.length;
+  const e=emos[emoIdx],b=document.getElementById('emo-ban');
+  b.className='emo-ban '+e.cls+' fu';
+  document.getElementById('emo-ico').textContent=e.ico;
+  document.getElementById('emo-msg').textContent=e.msg;
+}
+
+// QUIZ STATE
+let sT='',sD='medium',cDL=1,qs=[],cQ=0,sc=0,st=null,tmr=null,tl=30,qSt=null,pH=[],mLog=[];
+const dL=['easy','medium','hard'],dI=['🟢 Easy','🟡 Medium','🔴 Hard'],dC=['easy','med','hard'];
+let curMode='quiz';
+
+function setMode(mode,btn){
+  curMode=mode;
+  document.querySelectorAll('.mtab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  document.getElementById('quiz-sel').style.display=mode==='quiz'?'block':'none';
+  document.getElementById('reverse-card').style.display=mode==='reverse'?'block':'none';
+  document.getElementById('story-card').style.display=mode==='story'?'block':'none';
+  document.getElementById('teach-card').style.display=mode==='teach'?'block':'none';
+  document.getElementById('qactive').style.display='none';
+  document.getElementById('rcard').style.display='none';
+  document.getElementById('qload').style.display='none';
+}
+function selT(btn,topic){
+  document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');sT=topic;
+  const sb=document.getElementById('sbtn');sb.disabled=false;sb.textContent=`START "${topic.toUpperCase()}" →`;
+}
+function selD(btn,diff){
+  document.querySelectorAll('.dbtn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');sD=diff;cDL=diff==='easy'?0:(diff==='medium'?1:2);
+}
+function adapt(correct,t){
+  pH.push({correct,time:t});
+  const rec=pH.slice(-3),acc=rec.filter(x=>x.correct).length/rec.length,avg=rec.reduce((a,b)=>a+b.time,0)/rec.length;
+  if(rec.length>=2){
+    if(acc>.8&&avg<15&&cDL<2){cDL++;return`⬆ Difficulty → ${dL[cDL]}! You're crushing it.`;}
+    if(acc<.5&&cDL>0){cDL--;return`⬇ Difficulty → ${dL[cDL]}. Adjusting for your flow state.`;}
+  }return null;
+}
+
+async function startQuiz(){
+  if(!sT)return;
+  ['quiz-sel','qactive','rcard'].forEach(id=>{document.getElementById(id).style.display='none';});
+  document.getElementById('qload').style.display='block';
+  cQ=0;sc=0;qs=[];pH=[];mLog=[];st=Date.now();
+  try{
+    const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:1800,
+        messages:[{role:"user",content:`Generate 5 MCQ questions on "${sT}" at ${dL[cDL]} difficulty for undergrad CS students. Return ONLY a JSON array, no markdown, no backticks. Format: [{"q":"question","options":["A) ...","B) ...","C) ...","D) ..."],"answer":0,"concept":"concept name","error_type":"common error","thinking_path":["Step 1: ...","Step 2: ...","Step 3: ..."]}]`}]})});
+    const data=await res.json();
+    let txt=data.content.map(i=>i.text||'').join('').replace(/```json|```/g,'').trim();
+    qs=JSON.parse(txt);
+  }catch(e){
+    qs=[
+      {q:`In ${sT}, what does O(log n) complexity mean?`,options:['A) Linear growth','B) Problem halves each step','C) Constant time','D) Quadratic growth'],answer:1,concept:'Time complexity',error_type:'Algorithm analysis',thinking_path:['Step 1: Recall Big-O notation basics','Step 2: Think about how problem size changes each iteration','Step 3: log n means dividing by 2 each time — like binary search']},
+      {q:'Which is best for searching a sorted array?',options:['A) Linear Search O(n)','B) Binary Search O(log n)','C) Hashing O(1)','D) DFS O(V+E)'],answer:1,concept:'Searching algorithms',error_type:'Algorithm selection',thinking_path:['Step 1: Note the array is sorted — key clue','Step 2: Sorted data → binary search applies','Step 3: O(log n) is optimal for sorted arrays']},
+      {q:'What is the base case in recursion?',options:['A) The recursive call','B) The return statement','C) The condition that stops recursion','D) The function signature'],answer:2,concept:'Recursion',error_type:'Conceptual gap',thinking_path:['Step 1: Recursion = function calling itself','Step 2: Without a stop condition → infinite loop','Step 3: Base case = the termination condition']},
+      {q:'Which data structure uses LIFO?',options:['A) Queue','B) Stack','C) Linked List','D) Binary Tree'],answer:1,concept:'Stack data structure',error_type:'Data structure confusion',thinking_path:['Step 1: LIFO = Last In First Out','Step 2: Think of a stack of plates','Step 3: Stack → LIFO. Queue → FIFO']},
+      {q:'Big-O of accessing array element by index?',options:['A) O(n)','B) O(log n)','C) O(1)','D) O(n²)'],answer:2,concept:'Array access complexity',error_type:'Complexity analysis',thinking_path:['Step 1: Arrays store elements in contiguous memory','Step 2: Index maps directly to memory address','Step 3: Direct access → constant time O(1)']},
+    ];
+  }
+  document.getElementById('qload').style.display='none';
+  document.getElementById('qactive').style.display='block';
+  showQ();
+}
+
+function showQ(){
+  const q=qs[cQ];
+  document.getElementById('qnum').textContent=cQ+1;
+  document.getElementById('qpf').style.width=((cQ+1)/5*100)+'%';
+  document.getElementById('qtopic').textContent=sT.toUpperCase();
+  document.getElementById('qtext').textContent=q.q;
+  document.getElementById('mistp').classList.remove('show');
+  document.getElementById('adup').classList.remove('show');
+  document.getElementById('replay-panel').classList.remove('show');
+  document.getElementById('nxtbtn').style.display='none';
+  const pill=document.getElementById('qdp');pill.className='qdp '+dC[cDL];pill.textContent=dI[cDL];
+  const grid=document.getElementById('opts');grid.innerHTML='';
+  ['A','B','C','D'].forEach((lbl,i)=>{
+    const btn=document.createElement('button');btn.className='opt';
+    btn.innerHTML=`<span class="olbl">${lbl}</span>${q.options[i].replace(/^[A-D]\)\s*/,'')}`;
+    btn.onclick=()=>pick(i,q,btn);grid.appendChild(btn);
+  });
+  startTmr();
+}
+function startTmr(){
+  clearInterval(tmr);tl=30;qSt=Date.now();document.getElementById('qtm').textContent=tl;
+  tmr=setInterval(()=>{
+    tl--;document.getElementById('qtm').textContent=tl;
+    if(tl<=0){clearInterval(tmr);const btns=document.querySelectorAll('.opt');btns.forEach(b=>b.disabled=true);btns[qs[cQ].answer].classList.add('correct');showMist(qs[cQ]);showReplay(qs[cQ]);document.getElementById('nxtbtn').style.display='inline-block';}
+  },1000);
+}
+function pick(chosen,q,clicked){
+  clearInterval(tmr);const t=(Date.now()-qSt)/1000,correct=chosen===q.answer;
+  document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
+  if(correct){clicked.classList.add('correct');sc++;showToast('✅','Correct!',`+${cDL===2?40:(cDL===1?30:20)} XP`);}
+  else{clicked.classList.add('wrong');document.querySelectorAll('.opt')[q.answer].classList.add('correct');mLog.push({concept:q.concept||'Core',error:q.error_type||'Gap'});showMist(q);}
+  showReplay(q);
+  const msg=adapt(correct,t);if(msg){const au=document.getElementById('adup');au.textContent=msg;au.classList.add('show');}
+  document.getElementById('nxtbtn').style.display='inline-block';
+}
+function showMist(q){
+  document.getElementById('mptags').innerHTML=`<div class="mptag">Concept: ${q.concept||'Core'}</div><div class="mptag">${q.error_type||'Review needed'}</div>`;
+  document.getElementById('mpgap').textContent=`💡 Focus on "${q.concept}" — review this to plug the gap.`;
+  document.getElementById('mistp').classList.add('show');
+}
+function showReplay(q){
+  if(!q.thinking_path||!q.thinking_path.length)return;
+  document.getElementById('replay-steps').innerHTML=q.thinking_path.map((s,i)=>`<div class="replay-step"><div class="replay-num">${i+1}</div><div>${s}</div></div>`).join('');
+  document.getElementById('replay-panel').classList.add('show');
+}
+function nextQ(){cQ++;if(cQ<qs.length)showQ();else showResults();}
+function showResults(){
+  clearInterval(tmr);
+  document.getElementById('qactive').style.display='none';
+  document.getElementById('rcard').style.display='block';
+  const elapsed=Math.round((Date.now()-st)/1000);
+  const mins=Math.floor(elapsed/60),secs=elapsed%60;
+  const acc=Math.round(sc/5*100);
+  const xp=sc*(cDL===2?40:(cDL===1?30:20))+(sc===5?50:0);
+  document.getElementById('rscore').textContent=`${sc}/5`;
+  document.getElementById('rlbl').textContent=sc>=5?'🏆 Legendary!':(sc>=4?'🎉 Excellent!':(sc>=3?'👍 Good!':'💪 Keep going!'));
+  document.getElementById('rcor').textContent=sc;document.getElementById('rwrg').textContent=5-sc;
+  document.getElementById('racc').textContent=acc+'%';document.getElementById('rtm').textContent=`${mins}m ${secs}s`;
+  document.getElementById('rxp').textContent=xp;document.getElementById('remo').textContent=sc>=5?'🏆':(sc>=4?'🎉':(sc>=3?'👍':'💪'));
+  document.getElementById('ares').textContent=acc>80?'🧠 Difficulty increases next session':(acc<50?'🧠 Difficulty lowered — review concepts':'🧠 Balance maintained');
+  if(mLog.length>0){document.getElementById('msum').style.display='block';document.getElementById('mlist').innerHTML=mLog.map(m=>`<div class="msi">⚡ Gap: <b style="color:var(--primary)">${m.concept}</b> — ${m.error}</div>`).join('');}
+  const curXP=parseInt(document.getElementById('nav-xp').textContent.replace(/[^0-9]/g,''));
+  document.getElementById('nav-xp').textContent=(curXP+xp).toLocaleString();
+  showToast('🎉','Quiz Complete!',`+${xp} XP earned!`);
+  if(sc>=4)setTimeout(()=>{document.getElementById('lunum').textContent='13';document.getElementById('lusub').textContent="You've reached Expert level!";document.getElementById('luov').classList.add('show');document.getElementById('nav-lv').textContent='13';},1400);
+}
+function playAgain(){document.getElementById('rcard').style.display='none';document.getElementById('msum').style.display='none';document.getElementById('quiz-sel').style.display='block';}
+
+// REVERSE MODE
+const revQs=[{output:'1  4  9  16  25',hint:'Squares of 1–5'},{output:'1  1  2  3  5  8',hint:'Fibonacci sequence'},{output:'H E L L O',hint:'Print each character'},{output:'* ** *** ****',hint:'Pyramid pattern'}];
+let revIdx=0;
+function newReverseQ(){revIdx=(revIdx+1)%revQs.length;document.getElementById('rev-output').textContent=revQs[revIdx].output;document.getElementById('rev-input').value='';document.getElementById('rev-feedback').style.display='none';}
+async function evalReverse(){
+  const code=document.getElementById('rev-input').value;const out=revQs[revIdx].output;
+  if(!code.trim()){showToast('⚠️','Write Code First!','Enter your solution before evaluating.');return;}
+  const fb=document.getElementById('rev-feedback');fb.style.display='block';fb.textContent='🤖 AI evaluating your logic...';
+  try{
+    const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:300,messages:[{role:"user",content:`A student wrote: "${code}". Expected output: "${out}". In 2-3 sentences, evaluate if correct, note bugs, suggest improvement. Be encouraging.`}]})});
+    const data=await res.json();fb.textContent='🤖 '+data.content.map(i=>i.text||'').join('');
+    showToast('✅','Evaluated!','+20 XP for attempting Reverse Mode');
+  }catch(e){fb.textContent='✅ On the right track! Key insight: '+revQs[revIdx].hint+'.';}
+}
+
+// STORY MODE
+function storyAns(btn,correct){
+  document.querySelectorAll('#story-card .opt').forEach(b=>b.disabled=true);
+  const fb=document.getElementById('story-fb');fb.style.display='block';
+  if(correct){btn.classList.add('correct');fb.innerHTML='<div style="background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.2);border-radius:12px;padding:13px;font-size:.83rem;color:var(--text2)">✅ <strong style="color:var(--a2)">Excellent!</strong> Binary Search: 5s → 50ms. Investor impressed! +80 XP 🎉</div>';showToast('🎭','Chapter Complete!','+80 XP — You saved the startup!');}
+  else{btn.classList.add('wrong');fb.innerHTML='<div style="background:rgba(244,63,94,.06);border:1px solid rgba(244,63,94,.16);border-radius:12px;padding:13px;font-size:.83rem;color:var(--text2)">❌ <strong style="color:var(--danger)">Not quite.</strong> Think about divide-and-conquer approaches!</div>';setTimeout(()=>{document.querySelectorAll('#story-card .opt').forEach(b=>{b.disabled=false;b.classList.remove('wrong','correct');});fb.style.display='none';},2000);}
+  document.getElementById('story-next').style.display='inline-block';
+}
+function nextStory(){showToast('🎭','Next Chapter!','Chapter 2: The database is corrupted! Can you fix it?');document.querySelectorAll('#story-card .opt').forEach(b=>{b.disabled=false;b.classList.remove('wrong','correct');});document.getElementById('story-fb').style.display='none';document.getElementById('story-next').style.display='none';}
+
+// TEACH MODE
+async function evalTeach(){
+  const txt=document.getElementById('teach-input').value;
+  if(!txt.trim()){showToast('⚠️','Write First!','Type your explanation before submitting.');return;}
+  const fb=document.getElementById('teach-fb');fb.style.display='block';fb.textContent='🤖 AI evaluating clarity...';
+  try{
+    const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:300,messages:[{role:"user",content:`A student explained recursion: "${txt}". Rate clarity 1-10, give 2 improvements, mention what they got right. Encouraging, under 4 sentences.`}]})});
+    const data=await res.json();fb.textContent='🤖 '+data.content.map(i=>i.text||'').join('');
+    showToast('📖','Teach Mode!','+40 XP for teaching a concept!');
+  }catch(e){fb.textContent='✅ Great effort! Tip: Add a concrete example like factorial(5). Score: 7/10 — helpful for learners!';}
+}
+
+// PEER BATTLE
+const bQs=[
+  {q:'What is O(n log n)?',opts:['Constant','Linear','Merge Sort avg','Quadratic'],ans:2},
+  {q:'Which data structure uses FIFO?',opts:['Stack','Queue','Tree','Graph'],ans:1},
+  {q:'What is a hash collision?',opts:['Memory error','Two keys → same bucket','Null pointer','Stack overflow'],ans:1},
+  {q:'Binary search requires array to be?',opts:['Unsorted','Sorted','Random','Circular'],ans:1},
+  {q:'DFS uses which structure internally?',opts:['Queue','Heap','Stack','Array'],ans:2},
+];
+let pbRound=0,pbSM=0,pbSO=0,pbTmr=null,oppName='',oppAnswered=false;
+function startBattle(name,elo,ini,grad){
+  oppName=name;
+  document.getElementById('mm-card').style.display='none';
+  document.getElementById('pb-arena').style.display='block';
+  document.getElementById('pb-opp-name').textContent=name;
+  document.getElementById('pb-opp-elo').textContent='Elo: '+elo;
+  document.getElementById('pb-opp-av').textContent=ini||name[0];
+  if(grad)document.getElementById('pb-opp-av').style.background=grad;
+  pbRound=0;pbSM=0;pbSO=0;
+  document.getElementById('pb-feed').innerHTML='';
+  addFeed(`⚔️ Battle started vs ${name}! May the best coder win!`,'system');
+  nextBQ();
+}
+function nextBQ(){
+  if(pbRound>=5){endBattle();return;}
+  const q=bQs[pbRound];
+  document.getElementById('pb-round').textContent=pbRound+1;
+  document.getElementById('pb-qtext').textContent=q.q;
+  document.getElementById('pb-score-me').textContent=pbSM;
+  document.getElementById('pb-score-opp').textContent=pbSO;
+  const opts=document.getElementById('pb-opts');opts.innerHTML='';
+  q.opts.forEach((opt,i)=>{const btn=document.createElement('button');btn.className='pb-opt';btn.textContent=opt;btn.onclick=()=>pbPick(i,q,btn);opts.appendChild(btn);});
+  let t=15;document.getElementById('pb-time').textContent=t;oppAnswered=false;
+  clearInterval(pbTmr);
+  pbTmr=setInterval(()=>{t--;document.getElementById('pb-time').textContent=t;if(t<=0){clearInterval(pbTmr);if(!oppAnswered)pbOppAns(q);document.querySelectorAll('.pb-opt').forEach(b=>b.disabled=true);}},1000);
+  setTimeout(()=>{if(t>0&&!oppAnswered)pbOppAns(q);},(5+Math.random()*7)*1000);
+}
+function pbPick(i,q,btn){
+  clearInterval(pbTmr);document.querySelectorAll('.pb-opt').forEach(b=>b.disabled=true);
+  const correct=i===q.ans;btn.classList.add(correct?'pb-correct':'pb-wrong');
+  document.querySelectorAll('.pb-opt')[q.ans].classList.add('pb-correct');
+  if(correct){pbSM++;addFeed('✅ You answered correctly! +1 point','win');}else addFeed('❌ Wrong — opponent got it','lose');
+  document.getElementById('pb-my-bar').style.width=(pbSM/5*100)+'%';
+  pbRound++;setTimeout(nextBQ,1800);
+}
+function pbOppAns(q){
+  oppAnswered=true;
+  if(Math.random()>.4){pbSO++;addFeed(`${oppName} answered correctly!`,'lose');}else addFeed(`${oppName} got it wrong!`,'win');
+  document.getElementById('pb-opp-bar').style.width=(pbSO/5*100)+'%';
+}
+function addFeed(msg,type){const el=document.getElementById('pb-feed');const d=document.createElement('div');d.className='pb-msg '+type;d.textContent=msg;el.appendChild(d);el.scrollTop=el.scrollHeight;}
+function endBattle(){
+  clearInterval(pbTmr);const won=pbSM>pbSO;
+  addFeed(won?`🏆 YOU WIN! ${pbSM}-${pbSO}. Elo +15!`:`😤 You lost ${pbSM}-${pbSO}. Elo -10. Rematch?`,won?'win':'lose');
+  document.getElementById('pb-opts').innerHTML=`<button class="btn ${won?'bp':'br'}" style="width:100%;margin-top:11px" onclick="document.getElementById('mm-card').style.display='block';document.getElementById('pb-arena').style.display='none'">${won?'🏆 Back to Arena':'⚔️ Rematch!'}</button>`;
+  showToast(won?'🏆':'⚔️',won?'Battle Won!':'Battle Lost!',won?'+15 Elo, +80 XP!':'-10 Elo. Try again!');
+  if(won){const cur=parseInt(document.getElementById('nav-xp').textContent.replace(/[^0-9]/g,''));document.getElementById('nav-xp').textContent=(cur+80).toLocaleString();}
+}
+
+// MENTOR CHAT
+const mRes={
+  'binary tree':"A binary tree has each node with at most 2 children. Key traversals: Inorder (left→root→right), Preorder (root→left→right), Postorder (left→right→root). Want a practice quiz on trees? 🌳",
+  'study plan':"Based on your performance: Mon-Tue: Trees (weakest DSA topic), Wed: Peer Battles, Thu: TCP/IP, Fri: Reverse Mode. Targets your exact gaps. Estimated Level-up in 30 days! 📈",
+  'weak':"Top 3 weaknesses: 1) Tree traversal (60% accuracy) 2) TCP/IP protocols 3) Dynamic programming. Start with Trees — it unlocks Graphs. Want a 3-day Trees bootcamp? 💪",
+  'placement':"For placements: 1) Focus on DSA (arrays, trees, graphs, DP) 2) Do 2 Peer Battles daily 3) Complete Career Sim tasks 4) Your portfolio already has 3 strong projects. Target: 90 days! 🚀",
+  'motivat':"You've solved 47 quizzes and won 12 battles — that's REAL progress! 7-day streak shows consistency. One more challenge today? 🔥"
+};
+async function sendMsg(preMsg){
+  const input=document.getElementById('chat-in');const msg=preMsg||input.value.trim();if(!msg)return;
+  input.value='';addChat(msg,'user','YOU');
+  const low=msg.toLowerCase();const key=Object.keys(mRes).find(k=>low.includes(k));
+  if(key){setTimeout(()=>addChat(mRes[key],'ai','🤖 MENTOR AI'),600);return;}
+  addChat('Thinking...','ai','🤖 MENTOR AI');
+  try{
+    const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:300,messages:[{role:"user",content:`You are an encouraging AI mentor for Alex, a CS undergrad on LearnQuest. Alex is Level 12, studying DSA, Networks, Databases. They asked: "${msg}". Reply in 3-4 sentences, educational and motivating.`}]})});
+    const data=await res.json();
+    const msgs=document.getElementById('chat-msgs');
+    if(msgs.lastChild)msgs.lastChild.lastChild.textContent=data.content.map(i=>i.text||'').join('');
+    msgs.scrollTop=msgs.scrollHeight;
+  }catch(e){
+    const msgs=document.getElementById('chat-msgs');
+    if(msgs.lastChild)msgs.lastChild.lastChild.textContent="Great question! Focus on your weakest area first — consistent practice beats cramming. You've got this, Alex! 💪";
+    msgs.scrollTop=msgs.scrollHeight;
+  }
+}
+function addChat(msg,type,name){
+  const el=document.getElementById('chat-msgs');
+  const d=document.createElement('div');d.className=`chat-msg ${type}`;
+  d.innerHTML=`<div class="msg-name">${name}</div><div>${msg}</div>`;
+  el.appendChild(d);el.scrollTop=el.scrollHeight;
+}
+
+// TOAST
+let toastT=null;
+function showToast(ico,title,msg){
+  document.getElementById('ti').textContent=ico;document.getElementById('tt').textContent=title;document.getElementById('tm').textContent=msg;
+  const t=document.getElementById('toast');t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),3200);
+}
+</script>
+</body>
+</html>
