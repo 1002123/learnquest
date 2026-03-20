@@ -62,8 +62,3 @@ http://localhost:3001
 - JWT: https://jwt.io
 - Elo Rating: https://en.wikipedia.org/wiki/Elo_rating_system
 
-## 👨‍💻 Developed By
-Kotapuri Harshitha — SRM Institute of Science and Technology
-
-## 📄 License
-MIT License
